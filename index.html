@@ -311,10 +311,10 @@
         // ==========================================
         
         // Link da aba "Aulas" (termina com output=tsv)
-        const LINK_PLANILHA_AULAS = https://docs.google.com/spreadsheets/d/e/2PACX-1vRqOEEEZGFugY9MN7_0OsVjxvl02CxltDPfTx3LbUtte0mY7nLHWJxmu-ISbymcrS7cbyK__ixm43fI/pub?gid=0&single=true&output=tsv;
+        const LINK_PLANILHA_AULAS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqOEEEZGFugY9MN7_0OsVjxvl02CxltDPfTx3LbUtte0mY7nLHWJxmu-ISbymcrS7cbyK__ixm43fI/pub?gid=0&single=true&output=tsv";
         
         // Link da aba "Eventos" (termina com output=tsv)
-        const LINK_PLANILHA_EVENTOS = https://docs.google.com/spreadsheets/d/e/2PACX-1vRqOEEEZGFugY9MN7_0OsVjxvl02CxltDPfTx3LbUtte0mY7nLHWJxmu-ISbymcrS7cbyK__ixm43fI/pub?gid=1213067383&single=true&output=tsv;
+        const LINK_PLANILHA_EVENTOS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqOEEEZGFugY9MN7_0OsVjxvl02CxltDPfTx3LbUtte0mY7nLHWJxmu-ISbymcrS7cbyK__ixm43fI/pub?gid=1213067383&single=true&output=tsv";
 
         // ==========================================
 
@@ -332,7 +332,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             // Se os links não foram colados ainda, usa dados de exemplo temporários
-            if(LINK_PLANILHA_AULAS.includes(https://docs.google.com/spreadsheets/d/e/2PACX-1vRqOEEEZGFugY9MN7_0OsVjxvl02CxltDPfTx3LbUtte0mY7nLHWJxmu-ISbymcrS7cbyK__ixm43fI/pub?gid=0&single=true&output=tsv)) {
+            if(LINK_PLANILHA_AULAS.includes("https://docs.google.com/spreadsheets/d/e/2PACX-1vRqOEEEZGFugY9MN7_0OsVjxvl02CxltDPfTx3LbUtte0mY7nLHWJxmu-ISbymcrS7cbyK__ixm43fI/pub?gid=0&single=true&output=tsv")) {
                 alert("AVISO PARA O DESENVOLVEDOR: Você precisa colar os links TSV do Google Sheets no código-fonte!");
                 liberarAcesso(); // Libera com arrays vazios só pra não travar a tela
             } else {
