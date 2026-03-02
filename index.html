@@ -13,11 +13,11 @@
             --bg-panel: #1e1e1e;
             --text-main: #e0e0e0;
             --text-muted: #aaaaaa;
-            --accent-senac: #f47920; /* Laranja Oficial Senac */
+            --accent-senac: #f47920; 
             --accent-calc: #0056b3;
             --accent-aulas: #4caf50;
             --accent-eventos: #9c27b0;
-            --accent-warning: #ff9800; /* Laranja de aviso */
+            --accent-warning: #ff9800; 
             --border-color: #333;
         }
 
@@ -32,7 +32,6 @@
 
         .hidden { display: none !important; }
 
-        /* Botão genérico de voltar */
         .btn-voltar {
             background-color: transparent;
             color: var(--text-main);
@@ -68,7 +67,6 @@
             padding-bottom: 10px;
         }
 
-        /* Disclaimer de Responsabilidade */
         .disclaimer-box {
             background-color: rgba(255, 152, 0, 0.1);
             border-left: 4px solid var(--accent-warning);
@@ -181,14 +179,36 @@
         .search-box { background-color: var(--bg-panel); padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid var(--accent-senac); }
         .search-box label { display: block; margin-bottom: 8px; font-weight: bold; color: #ccc; }
         .search-box select { width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #444; background-color: #2c2c2c; color: white; font-size: 1em; }
+        
+        /* Tag de UC Encerrada */
+        .uc-encerrada {
+            background-color: #1b2a20; 
+            color: #4caf50; 
+            padding: 12px; 
+            text-align: center; 
+            font-weight: bold; 
+            border-radius: 4px; 
+            margin-bottom: 15px; 
+            border: 1px solid #4caf50; 
+            font-size: 0.9em; 
+            letter-spacing: 0.5px;
+        }
+
         .aulas-container { display: flex; flex-direction: column; gap: 15px; }
         .card { background-color: var(--bg-panel); border-left: 5px solid var(--accent-aulas); padding: 20px; border-radius: 8px; cursor: pointer; transition: transform 0.2s; }
         .card.past { border-left-color: #888; opacity: 0.7; }
         .card.today { border-left-color: #e91e63; background-color: #2a1b20; }
+        .card.tomorrow { border-left-color: var(--accent-warning); background-color: #2a2015; }
         .card.next { border-left-color: #2196f3; }
         .card.cancelled { border-left-color: #f44336; opacity: 0.8; }
+        
         .status { font-size: 0.85em; text-transform: uppercase; font-weight: bold; margin-bottom: 10px; }
-        .past .status { color: #aaa; } .today .status { color: #ff4081; } .next .status { color: #64b5f6; } .cancelled .status { color: #f44336; }
+        .past .status { color: #aaa; } 
+        .today .status { color: #ff4081; } 
+        .tomorrow .status { color: var(--accent-warning); }
+        .next .status { color: #64b5f6; } 
+        .cancelled .status { color: #f44336; }
+        
         .date { font-size: 1.2em; margin-bottom: 5px; color: #fff; }
         .details { font-size: 1em; color: #ccc; }
         .footer-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--bg-panel); display: flex; justify-content: center; padding: 15px 10px; z-index: 100; box-sizing: border-box; box-shadow: 0 -4px 10px rgba(0,0,0,0.5); }
@@ -217,32 +237,28 @@
            6. EVENTOS
            ========================================== */
         .evento-card { background-color: var(--bg-panel); border-left: 5px solid var(--accent-eventos); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-        .evento-data { color: var(--accent-eventos); font-weight: bold; font-size: 0.9em; margin-bottom: 5px; }
+        .evento-data { color: var(--accent-eventos); font-weight: bold; font-size: 1em; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .evento-countdown { font-weight: normal; font-size: 0.85em; opacity: 0.8; }
+        .evento-countdown.urgente { color: var(--accent-warning); font-weight: bold; opacity: 1; }
+        .evento-countdown.hoje { color: #ff4081; font-weight: bold; opacity: 1; }
         .evento-titulo { font-size: 1.2em; color: #fff; margin-bottom: 5px; }
-        .evento-desc { color: #ccc; font-size: 0.95em; }
+        .evento-desc { color: #ccc; font-size: 0.95em; line-height: 1.4; }
     </style>
 </head>
 <body>
 
     <div id="splash-screen" onclick="dismissSplash()">
         <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Senac_logo.svg" alt="Senac Logo" class="senac-logo-img">
-        
         <div class="splash-subtitle">Lapa - Scipião</div>
-        
         <div class="splash-curso">Técnico em Processos Fotográficos</div>
         <div class="splash-turma">Turma 43M</div>
         <div class="splash-curso">SCI-TPF43M</div>
-
         <div class="click-hint-splash">Toque em qualquer lugar para entrar</div>
-
-        <div class="splash-footer">
-            Versão 3.2 | Desenvolvido por Harry Bour
-        </div>
+        <div class="splash-footer">Versão 3.3 | Desenvolvido por Harry Bour</div>
     </div>
 
     <div id="view-menu" class="view hidden">
         <div id="main-menu">
-            
             <div class="menu-header">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Senac_logo.svg" alt="Senac Logo" class="senac-logo-img" style="margin-bottom: 5px;">
                 <br>
@@ -263,7 +279,6 @@
 
     <div id="view-aulas" class="view page-container hidden">
         <button class="btn-voltar" onclick="switchView('view-menu')">⬅ Menu Principal</button>
-        
         <h1 class="page-title" style="border-bottom-color: var(--accent-aulas);">Crono de Aulas</h1>
 
         <div class="disclaimer-box">
@@ -297,34 +312,27 @@
                 <div id="modalUC" style="font-size: 1.2em; font-weight: bold; color: #fff;">UC e Aula</div>
                 <div id="modalProf" style="color: var(--accent-eventos); font-weight: bold;">Professor</div>
             </div>
-            <div id="modalTexto" style="line-height: 1.6; white-space: pre-wrap;">
-                Conteúdo carregando...
-            </div>
+            <div id="modalTexto" style="line-height: 1.6; white-space: pre-wrap;">Conteúdo carregando...</div>
         </div>
     </div>
 
     <div id="view-calc" class="view page-container hidden">
         <button class="btn-voltar" onclick="switchView('view-menu')">⬅ Menu Principal</button>
-        
         <h1 class="page-title" style="border-bottom-color: var(--accent-calc);">Mapa de Luz</h1>
-        
         <button class="btn-add-luz" onclick="addLight()">+ Adicionar Ponto de Luz (Máx 5)</button>
         <div id="lightsContainer"></div>
     </div>
 
     <div id="view-eventos" class="view page-container hidden">
         <button class="btn-voltar" onclick="switchView('view-menu')">⬅ Menu Principal</button>
-        
         <h1 class="page-title" style="border-bottom-color: var(--accent-eventos);">Eventos e Prazos</h1>
 
         <div class="disclaimer-box">
             <strong>⚠️ Atenção:</strong> O Cronograma pode sofrer alterações não refletidas nessa ferramenta em tempo real. Essa ferramenta é um apoio, mas cabe ao aluno a responsabilidade individual de acompanhar o cronograma, disponível por meios oficiais da instituição de ensino.
         </div>
 
-        <div id="lista-eventos">
-            </div>
+        <div id="lista-eventos"></div>
     </div>
-
 
     <script>
         /* --- NAVEGAÇÃO E SPLASH SCREEN --- */
@@ -334,13 +342,9 @@
             } else {
                 dismissSplash();
             }
-            
             initAulas();
             initEventos();
-            if(lights.length === 0) {
-                addLight('Principal', 8, 6); 
-                addLight('Preenchimento', 5, 5);
-            }
+            if(lights.length === 0) { addLight('Principal', 8, 6); addLight('Preenchimento', 5, 5); }
         });
 
         function dismissSplash() {
@@ -355,11 +359,7 @@
             
             const rodapeAulas = document.getElementById('rodape-semanas');
             if(rodapeAulas) {
-                if(viewId === 'view-aulas' && document.getElementById('filtroUC').value === "") {
-                    rodapeAulas.style.display = 'flex';
-                } else {
-                    rodapeAulas.style.display = 'none';
-                }
+                rodapeAulas.style.display = (viewId === 'view-aulas' && document.getElementById('filtroUC').value === "") ? 'flex' : 'none';
             }
             window.scrollTo(0,0);
         }
@@ -375,15 +375,40 @@
         function initEventos() {
             const container = document.getElementById('lista-eventos');
             let html = '';
-            
             baseEventos.sort((a, b) => new Date(a.data) - new Date(b.data));
+
+            const hojeDate = new Date();
+            const hojeY = hojeDate.getFullYear();
+            const hojeM = hojeDate.getMonth();
+            const hojeD = hojeDate.getDate();
 
             baseEventos.forEach(ev => {
                 const [ano, mes, dia] = ev.data.split('-');
                 const dataFormatada = `${dia}/${mes}/${ano}`;
+                
+                // Cálculo exato de dias ignorando fuso horário
+                const dataEvento = new Date(ano, mes - 1, dia);
+                const dataHojeLocal = new Date(hojeY, hojeM, hojeD);
+                const diffTime = dataEvento - dataHojeLocal;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                let countdownHTML = "";
+                if (diffDays > 1) {
+                    countdownHTML = `<span class="evento-countdown">(Faltam ${diffDays} dias)</span>`;
+                } else if (diffDays === 1) {
+                    countdownHTML = `<span class="evento-countdown urgente">(É amanhã!)</span>`;
+                } else if (diffDays === 0) {
+                    countdownHTML = `<span class="evento-countdown hoje">(É hoje!)</span>`;
+                } else {
+                    countdownHTML = `<span class="evento-countdown">(Realizado)</span>`;
+                }
+
                 html += `
                     <div class="evento-card">
-                        <div class="evento-data">📅 ${dataFormatada}</div>
+                        <div class="evento-data">
+                            <span>📅 ${dataFormatada}</span>
+                            ${countdownHTML}
+                        </div>
                         <div class="evento-titulo">${ev.titulo}</div>
                         <div class="evento-desc">${ev.desc}</div>
                     </div>
@@ -398,30 +423,20 @@
         let lightIdCounter = 0;
 
         function getAbsoluteValue(stopIndex, tenths) { return (stopIndex * 10) + tenths; }
-
         function addLight(role = 'Preenchimento', baseStop = 6, tenths = 0) {
             if (lights.length >= 5) return alert("Máximo de 5 luzes.");
-            const id = lightIdCounter++;
-            lights.push({ id, role, baseStop, tenths });
+            lights.push({ id: lightIdCounter++, role, baseStop, tenths });
             renderLights();
         }
-
-        function removeLight(id) {
-            lights = lights.filter(l => l.id !== id);
-            renderLights();
-        }
-
+        function removeLight(id) { lights = lights.filter(l => l.id !== id); renderLights(); }
         function updateLight(id, field, value) {
             const light = lights.find(l => l.id === id);
             if (light) {
                 light[field] = value;
-                if (field === 'role' && value === 'Principal') {
-                    lights.forEach(l => { if (l.id !== id && l.role === 'Principal') l.role = 'Preenchimento'; });
-                }
+                if (field === 'role' && value === 'Principal') lights.forEach(l => { if (l.id !== id && l.role === 'Principal') l.role = 'Preenchimento'; });
                 renderLights();
             }
         }
-
         function nudgeLight(id, tenthsToAdd) {
             const light = lights.find(l => l.id === id);
             if (!light) return;
@@ -475,13 +490,10 @@
                     resDiv.style.color = "#28a745";
                 } else if (principal) {
                     const diff = getAbsoluteValue(principal.baseStop, principal.tenths) - getAbsoluteValue(light.baseStop, light.tenths);
-                    if (diff === 0) {
-                        resDiv.innerText = "✅ Luz igualada.";
-                    } else {
+                    if (diff === 0) { resDiv.innerText = "✅ Luz igualada."; } 
+                    else {
                         const dir = diff > 0 ? "Aumente" : "Reduza";
-                        const h = Math.floor(Math.abs(diff) / 5);
-                        const t = Math.abs(diff) % 5;
-                        resDiv.innerHTML = `⚙️ Na Tocha: <strong>${dir}</strong> luz em <strong>${h} clicks (1/2)</strong> e <strong>${t} clicks (1/10)</strong>.`;
+                        resDiv.innerHTML = `⚙️ Na Tocha: <strong>${dir}</strong> luz em <strong>${Math.floor(Math.abs(diff) / 5)} clicks (1/2)</strong> e <strong>${Math.abs(diff) % 5} clicks (1/10)</strong>.`;
                     }
                 }
             });
@@ -511,7 +523,6 @@
             "2026-07-02": "EXPOSIÇÃO PI 43M."
         };
 
-        // ARRAY COMPLETA COM ALTERAÇÃO NO DIA 03/03/2026
         const rawAulas = [
             "2025-04-14|UC4|Marcella Camillo|1", "2025-04-15|UC1|Paula Lira|1", "2025-04-16|UC1|Paula Lira|2",
             "2025-04-17|UC3|Guilherme Correia|1", "2025-04-22|UC1|Paula Lira|3", "2025-04-23|UC1|Paula Lira|4",
@@ -587,12 +598,8 @@
             return { data, codigoUC: uc, uc: `${uc} - ${nomesUC[uc] || ''}`, docente, aula };
         });
 
-        function toISODate(d) {
-            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-        }
-        function formatarDataBR(iso) {
-            const [a, m, d] = iso.split('-'); return `${d}/${m}/${a}`;
-        }
+        function toISODate(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+        function formatarDataBR(iso) { const [a, m, d] = iso.split('-'); return `${d}/${m}/${a}`; }
         function getDiaDaSemana(iso) {
             const d = new Date(iso.split('-')[0], iso.split('-')[1] - 1, iso.split('-')[2], 12, 0, 0);
             return ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'][d.getDay()];
@@ -630,10 +637,17 @@
             resPanel.style.display = 'flex';
 
             const dUC = aulasArray.filter(a => a.codigoUC === ucSelec);
+            const hojeStr = toISODate(new Date());
+            const todasEncerradas = dUC.length > 0 && dUC.every(a => a.data < hojeStr);
+
             let h = `<div class="card" style="border-left-color: #ff9800;">
                         <button onclick="limparBusca()" class="btn-voltar" style="border-color: #ff9800; color:#ff9800;">⬅ Limpar Busca</button>
                         <h3 style="margin-top:0; color:#ff9800;">${nomesUC[ucSelec]}</h3>`;
             
+            if (todasEncerradas) {
+                h += `<div class="uc-encerrada">✅ UC Encerrada para a Turma 43M</div>`;
+            }
+
             if(dUC.length === 0) h += `<p>Sem aulas agendadas.</p>`;
             dUC.forEach(a => {
                 h += `<div style="padding:10px 0; border-bottom:1px solid #333;" onclick="abrirModal('${a.data}', '${a.uc}', '${a.docente}', '${a.aula}')">
@@ -659,13 +673,16 @@
             const seg = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() - hoje.getDay() + 1 + (offset * 7), 12, 0, 0);
             const sex = new Date(seg.getFullYear(), seg.getMonth(), seg.getDate() + 4, 12, 0, 0);
             
+            const hojeStr = toISODate(hoje);
+            const amanha = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() + 1);
+            const amanhaStr = toISODate(amanha);
+
             const aSemana = aulasArray.filter(a => a.data >= toISODate(seg) && a.data <= toISODate(sex));
             
             let html = `<h3 style="text-align:center;">Sua Semana</h3>`;
             if (aSemana.length === 0) html += `<div class="card"><div class="details">Sem aulas programadas.</div></div>`;
             
             aSemana.forEach(a => {
-                // Checa se a aula tem a tag de cancelada para estilizar em vermelho
                 const isCancelled = a.aula.includes('Cancelada');
                 let cardClass = '';
                 let statusMsg = '';
@@ -674,8 +691,19 @@
                     cardClass = 'cancelled';
                     statusMsg = `❌ CANCELADA - ${getDiaDaSemana(a.data)}`;
                 } else {
-                    cardClass = a.data === toISODate(hoje) ? 'today' : (a.data < toISODate(hoje) ? 'past' : 'next');
-                    statusMsg = cardClass === 'today' ? '🔥 HOJE' : getDiaDaSemana(a.data);
+                    if (a.data === hojeStr) {
+                        cardClass = 'today';
+                        statusMsg = '🔥 HOJE';
+                    } else if (a.data === amanhaStr) {
+                        cardClass = 'tomorrow';
+                        statusMsg = `${getDiaDaSemana(a.data)} - AMANHÃ! ⚡`;
+                    } else if (a.data < hojeStr) {
+                        cardClass = 'past';
+                        statusMsg = `✅ ${getDiaDaSemana(a.data)}`;
+                    } else {
+                        cardClass = 'next';
+                        statusMsg = `⏳ ${getDiaDaSemana(a.data)}`;
+                    }
                 }
 
                 html += `
