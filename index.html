@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hub TPF43M - SNC Lapa Scipião</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
+
     <style>
-        /* ========================================== 
+        /* ==========================================
            1. VARIÁVEIS GERAIS E TEMA ESCURO
            ========================================== */
         :root {
@@ -17,6 +20,7 @@
             --accent-calc: #0056b3;
             --accent-aulas: #4caf50;
             --accent-eventos: #9c27b0;
+            --accent-sun: #ffb300;
             --accent-warning: #ff9800; 
             --border-color: #333;
         }
@@ -114,11 +118,11 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            gap: 20px;
+            gap: 15px;
             padding: 20px;
         }
 
-        .menu-header { text-align: center; margin-bottom: 20px; animation: fadeIn 0.8s ease-in; }
+        .menu-header { text-align: center; margin-bottom: 15px; animation: fadeIn 0.8s ease-in; }
         .menu-turma-badge {
             font-size: 1.2rem; color: #fff; background-color: var(--bg-panel);
             border: 1px solid var(--border-color); padding: 8px 20px;
@@ -128,17 +132,17 @@
         
         .menu-btn {
             background-color: var(--bg-panel); border: 1px solid var(--border-color);
-            color: #fff; width: 100%; max-width: 400px; padding: 25px 20px;
-            border-radius: 12px; font-size: 1.2rem; font-weight: bold;
+            color: #fff; width: 100%; max-width: 400px; padding: 20px 20px;
+            border-radius: 12px; font-size: 1.1rem; font-weight: bold;
             cursor: pointer; display: flex; align-items: center; gap: 15px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.2s, background-color 0.2s;
         }
-        .menu-btn:hover { transform: translateY(-3px); background-color: #2a2a2a; }
-        .menu-icon { font-size: 2rem; }
+        .menu-btn:hover { transform: translateY(-2px); background-color: #2a2a2a; }
+        .menu-icon { font-size: 1.8rem; }
         .menu-btn.btn-aulas { border-left: 5px solid var(--accent-aulas); }
-        .menu-btn.btn-calc { border-left: 5px solid var(--accent-calc); }
         .menu-btn.btn-eventos { border-left: 5px solid var(--accent-eventos); }
-        .menu-btn:disabled { opacity: 0.6; cursor: wait; }
+        .menu-btn.btn-sun { border-left: 5px solid var(--accent-sun); }
+        .menu-btn.btn-calc { border-left: 5px solid var(--accent-calc); }
 
         /* ==========================================
            3. PAINEL DE AULAS
@@ -155,17 +159,8 @@
 
         .aulas-container { display: flex; flex-direction: column; gap: 15px; }
         .card { background-color: var(--bg-panel); border-left: 5px solid var(--accent-aulas); padding: 20px; border-radius: 8px; cursor: pointer; transition: transform 0.2s; }
-        
-        /* Aulas Passadas - Totalmente em Cinza */
-        .card.past { 
-            border-left-color: #555; 
-            background-color: #161616; 
-            opacity: 0.6; 
-        }
-        .card.past .status, .card.past .date, .card.past .details, .card.past .details span { 
-            color: #777 !important; 
-        }
-        
+        .card.past { border-left-color: #555; background-color: #161616; opacity: 0.6; }
+        .card.past .status, .card.past .date, .card.past .details, .card.past .details span { color: #777 !important; }
         .card.today { border-left-color: #e91e63; background-color: #2a1b20; }
         .card.tomorrow { border-left-color: var(--accent-warning); background-color: #2a2015; }
         .card.next { border-left-color: #2196f3; }
@@ -184,7 +179,6 @@
         .footer-nav button { background-color: #2c2c2c; color: #ccc; border: 1px solid #444; padding: 10px; border-radius: 6px; cursor: pointer; flex: 1; font-weight: bold; }
         .footer-nav button.active { background-color: var(--accent-aulas); color: white; border-color: var(--accent-aulas); }
         
-        /* Modal Aulas */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
         .modal-box { background: var(--bg-panel); border-top: 5px solid var(--accent-eventos); padding: 25px; border-radius: 12px; width: 100%; max-width: 500px; position: relative; }
         .modal-close { position: absolute; top: 15px; right: 15px; background: none; border: none; color: #aaa; font-size: 1.8em; cursor: pointer; }
@@ -205,46 +199,43 @@
            5. EVENTOS
            ========================================== */
         .evento-card { background-color: var(--bg-panel); border-left: 5px solid var(--accent-eventos); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-        
-        /* Eventos Passados - Em cinza */
-        .evento-card.past {
-            border-left-color: #555;
-            background-color: #161616;
-            opacity: 0.6;
-        }
-        .evento-card.past .evento-titulo, 
-        .evento-card.past .evento-desc, 
-        .evento-card.past .evento-data span,
-        .evento-card.past .evento-countdown {
-            color: #777 !important;
-        }
-
+        .evento-card.past { border-left-color: #555; background-color: #161616; opacity: 0.6; }
+        .evento-card.past .evento-titulo, .evento-card.past .evento-desc, .evento-card.past .evento-data span, .evento-card.past .evento-countdown { color: #777 !important; }
         .evento-data { color: var(--accent-eventos); font-weight: bold; font-size: 1em; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
         .evento-countdown { font-weight: normal; font-size: 0.85em; opacity: 0.8; }
         .evento-countdown.urgente { color: var(--accent-warning); font-weight: bold; opacity: 1; }
         .evento-countdown.hoje { color: #ff4081; font-weight: bold; opacity: 1; }
         .evento-titulo { font-size: 1.2em; color: #fff; margin-bottom: 5px; }
         .evento-desc { color: #ccc; font-size: 0.95em; line-height: 1.4; }
+
+        /* ==========================================
+           6. SUNCALC (LUZ NATURAL)
+           ========================================== */
+        .sun-card { background-color: var(--bg-panel); padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid #555; }
+        .sun-card.golden { border-left-color: var(--accent-sun); background-color: rgba(255, 179, 0, 0.1); }
+        .sun-card.blue { border-left-color: #2196f3; background-color: rgba(33, 150, 243, 0.1); }
+        .sun-card .time { font-size: 1.2em; font-weight: bold; color: #fff; }
+        .sun-card .label { color: #ccc; font-size: 0.9em; }
+        .btn-gps { background-color: transparent; color: var(--accent-sun); border: 1px solid var(--accent-sun); padding: 12px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 20px; transition: 0.2s; }
+        .btn-gps:hover { background-color: rgba(255, 179, 0, 0.1); }
     </style>
 </head>
 <body>
 
     <div id="splash-screen" onclick="dismissSplash()">
         <div style="font-size: 4rem; margin-bottom: 10px;">📷</div>
-        
         <div style="background-color: var(--accent-warning); color: #000; padding: 4px 12px; border-radius: 15px; font-size: 0.75rem; font-weight: bold; margin-bottom: 15px; letter-spacing: 1px;">
             PROJETO DE ALUNOS (NÃO-OFICIAL)
         </div>
-
         <div class="splash-subtitle">SNC Lapa - Scipião</div>
         <div class="splash-curso">Técnico em Processos Fotográficos</div>
         <div class="splash-turma">Turma 43M</div>
         <div class="splash-curso">SCI-TPF43M</div>
         <div id="loading-text" style="color: var(--accent-snc); font-weight: bold; margin-top: 20px;">
-            Sincronizando banco de dados...
+            A sincronizar base de dados...
         </div>
         <div class="click-hint-splash hidden" id="click-hint">Toque em qualquer lugar para entrar</div>
-        <div class="splash-footer">Versão 4.5 | Desenvolvido por Harry Bour</div>
+        <div class="splash-footer">Versão 4.6 | Desenvolvido por Harry Bour</div>
     </div>
 
     <div id="view-menu" class="view hidden">
@@ -260,8 +251,11 @@
             <button class="menu-btn btn-eventos" onclick="switchView('view-eventos')">
                 <span class="menu-icon">📷</span> Eventos da Turma
             </button>
+            <button class="menu-btn btn-sun" onclick="switchView('view-suncalc'); initSunCalc();">
+                <span class="menu-icon">☀️</span> Luz Natural (SunCalc)
+            </button>
             <button class="menu-btn btn-calc" onclick="switchView('view-calc')">
-                <span class="menu-icon">🧮</span> Calculadora
+                <span class="menu-icon">🧮</span> Calculadora Estúdio
             </button>
         </div>
     </div>
@@ -271,7 +265,7 @@
         <h1 class="page-title" style="border-bottom-color: var(--accent-aulas);">Crono de Aulas</h1>
 
         <div class="disclaimer-box">
-            <strong>⚠️ Atenção:</strong> O Cronograma pode sofrer alterações não refletidas nessa ferramenta em tempo real. Essa ferramenta é um apoio, mas cabe ao aluno a responsabilidade individual de acompanhar o cronograma, disponível por meios oficiais da instituição de ensino.
+            <strong>⚠️ Atenção:</strong> O Cronograma pode sofrer alterações não refletidas nesta ferramenta em tempo real. Consulte sempre os meios oficiais da instituição.
         </div>
 
         <div class="search-box">
@@ -287,8 +281,8 @@
         <div class="footer-nav" id="rodape-semanas">
             <div class="footer-nav-inner">
                 <button id="btn-passada" onclick="mudarSemana(-1)">Semana Passada</button>
-                <button id="btn-atual" class="active" onclick="mudarSemana(0)">Essa Semana</button>
-                <button id="btn-que-vem" onclick="mudarSemana(1)">Semana que Vem</button>
+                <button id="btn-atual" class="active" onclick="mudarSemana(0)">Esta Semana</button>
+                <button id="btn-que-vem" onclick="mudarSemana(1)">Próxima Semana</button>
             </div>
         </div>
     </div>
@@ -301,7 +295,7 @@
                 <div id="modalUC" style="font-size: 1.2em; font-weight: bold; color: #fff;">UC e Aula</div>
                 <div id="modalProf" style="color: var(--accent-eventos); font-weight: bold;">Professor</div>
             </div>
-            <div id="modalTexto" style="line-height: 1.6; white-space: pre-wrap;">Detalhes adicionais não fornecidos na planilha.</div>
+            <div id="modalTexto" style="line-height: 1.6; white-space: pre-wrap;">Detalhes adicionais não fornecidos na folha de cálculo.</div>
         </div>
     </div>
 
@@ -317,10 +311,20 @@
         <h1 class="page-title" style="border-bottom-color: var(--accent-eventos);">Eventos e Prazos</h1>
 
         <div class="disclaimer-box">
-            <strong>⚠️ Atenção:</strong> O Cronograma pode sofrer alterações não refletidas nessa ferramenta em tempo real. Essa ferramenta é um apoio, mas cabe ao aluno a responsabilidade individual de acompanhar o cronograma, disponível por meios oficiais da instituição de ensino.
+            <strong>⚠️ Atenção:</strong> Verifique sempre as datas oficiais com os docentes.
         </div>
 
         <div id="lista-eventos"></div>
+    </div>
+
+    <div id="view-suncalc" class="view page-container hidden">
+        <button class="btn-voltar" onclick="switchView('view-menu')">⬅ Menu Principal</button>
+        <h1 class="page-title" style="border-bottom-color: var(--accent-sun);">Luz Natural (Hoje)</h1>
+
+        <button class="btn-gps" id="btn-gps" onclick="getMyLocation()">📍 Usar a minha localização atual</button>
+        
+        <div id="suncalc-results">
+            </div>
     </div>
 
     <script>
@@ -383,7 +387,7 @@
             } catch (error) {
                 console.error("Modo offline ou erro de conexão:", error);
                 if (!dadosCarregados) {
-                    document.getElementById('loading-text').innerText = "Você está offline. Exibindo apenas ferramentas locais.";
+                    document.getElementById('loading-text').innerText = "Você está offline. A exibir apenas ferramentas locais.";
                 }
             } finally {
                 if (!dadosCarregados) liberarAcesso();
@@ -486,7 +490,6 @@
                 const diffTime = dataEvento.getTime() - dataHojeLocal.getTime();
                 const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
 
-                // REGRA 1: Ignora eventos que aconteceram há mais de 10 dias
                 if (diffDays < -10) return;
 
                 let countdownHTML = "";
@@ -577,7 +580,7 @@
                 h += `<div class="uc-encerrada">✅ UC Encerrada para a Turma 43M</div>`;
             }
 
-            if(dUC.length === 0) h += `<p>Nenhuma aula agendada na planilha.</p>`;
+            if(dUC.length === 0) h += `<p>Nenhuma aula agendada na base de dados.</p>`;
             dUC.forEach(a => {
                 const isPast = a.data < hojeStr;
                 const rowStyle = isPast ? "padding:10px 0; border-bottom:1px solid #333; color:#777; opacity:0.6;" : "padding:10px 0; border-bottom:1px solid #333;";
@@ -611,7 +614,7 @@
 
             const aSemana = aulasArray.filter(a => a.data >= toISODate(seg) && a.data <= toISODate(sex));
             
-            let html = `<h3 style="text-align:center;">Sua Semana</h3>`;
+            let html = `<h3 style="text-align:center;">A Sua Semana</h3>`;
             if (aSemana.length === 0) html += `<div class="card"><div class="details" style="text-align:center;">Nenhuma aula programada para esta semana.</div></div>`;
             
             aSemana.forEach(a => {
@@ -650,7 +653,6 @@
 
         /* --- MÓDULO: CALCULADORA DE ESTÚDIO (HÍBRIDA) --- */
         const fStopsFull = ['f/1.0', 'f/1.4', 'f/2.0', 'f/2.8', 'f/4.0', 'f/5.6', 'f/8.0', 'f/11', 'f/16', 'f/22', 'f/32', 'f/45', 'f/64'];
-        
         const fStopsData = [
             { f: '1.0', t1: '1.1', t2: '1.2', next: '1.4' },
             { f: '1.4', t1: '1.6', t2: '1.8', next: '2.0' },
@@ -707,32 +709,15 @@
 
             switch(tenths) {
                 case 0:
-                case 1:
-                    message = `📸 Câmera: Use <strong>f/${stopData.f}</strong> (Ponto inteiro)`;
-                    break;
-                case 2:
-                    message = `⚠️ MEXE NA LUZ! (-2/10 para <strong>f/${stopData.f}</strong> ou +1/10 para <strong>f/${stopData.t1}</strong>)`;
-                    isWarning = true;
-                    break;
+                case 1: message = `📸 Câmera: Use <strong>f/${stopData.f}</strong> (Ponto inteiro)`; break;
+                case 2: message = `⚠️ MEXE NA LUZ! (-2/10 para <strong>f/${stopData.f}</strong> ou +1/10 para <strong>f/${stopData.t1}</strong>)`; isWarning = true; break;
                 case 3:
-                case 4:
-                    message = `📸 Câmera: Use <strong>f/${stopData.t1}</strong> (1º Terço)`;
-                    break;
-                case 5:
-                    message = `⚠️ MEXE NA LUZ! (Mude 1/2 ponto para <strong>f/${stopData.f}</strong> ou <strong>f/${stopData.next}</strong>)`;
-                    isWarning = true;
-                    break;
+                case 4: message = `📸 Câmera: Use <strong>f/${stopData.t1}</strong> (1º Terço)`; break;
+                case 5: message = `⚠️ MEXE NA LUZ! (Mude 1/2 ponto para <strong>f/${stopData.f}</strong> ou <strong>f/${stopData.next}</strong>)`; isWarning = true; break;
                 case 6:
-                case 7:
-                    message = `📸 Câmera: Use <strong>f/${stopData.t2}</strong> (2º Terço)`;
-                    break;
-                case 8:
-                    message = `⚠️ MEXE NA LUZ! (-1/10 para <strong>f/${stopData.t2}</strong> ou +2/10 para <strong>f/${stopData.next}</strong>)`;
-                    isWarning = true;
-                    break;
-                case 9:
-                    message = `📸 Câmera: Use <strong>f/${stopData.next}</strong> (Próximo Inteiro)`;
-                    break;
+                case 7: message = `📸 Câmera: Use <strong>f/${stopData.t2}</strong> (2º Terço)`; break;
+                case 8: message = `⚠️ MEXE NA LUZ! (-1/10 para <strong>f/${stopData.t2}</strong> ou +2/10 para <strong>f/${stopData.next}</strong>)`; isWarning = true; break;
+                case 9: message = `📸 Câmera: Use <strong>f/${stopData.next}</strong> (Próximo Inteiro)`; break;
             }
             return { message, isWarning };
         }
@@ -792,6 +777,85 @@
                 }
                 resDiv.innerHTML = resultHTML;
             });
+        }
+
+        /* --- MÓDULO: LUZ NATURAL (SUNCALC) --- */
+        function formatTime(date) {
+            if (isNaN(date.getTime())) return "--:--";
+            return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function renderSunCalc(lat, lng, locationName) {
+            // Utiliza a data atual
+            const today = new Date();
+            const times = SunCalc.getTimes(today, lat, lng);
+            
+            let html = `<div style="margin-bottom: 15px; color: var(--text-muted); font-size: 0.9em; text-align: center;">
+                            📍 Referência: <strong>${locationName}</strong>
+                        </div>`;
+            
+            html += `
+                <div class="sun-card">
+                    <span class="label">🌅 Nascer do Sol</span>
+                    <span class="time">${formatTime(times.sunrise)}</span>
+                </div>
+                <div class="sun-card golden">
+                    <span class="label">✨ Hora Dourada (Manhã)</span>
+                    <span class="time">${formatTime(times.sunriseEnd)} - ${formatTime(times.goldenHourEnd)}</span>
+                </div>
+                <div class="sun-card golden">
+                    <span class="label">✨ Hora Dourada (Tarde)</span>
+                    <span class="time">${formatTime(times.goldenHour)} - ${formatTime(times.sunsetStart)}</span>
+                </div>
+                <div class="sun-card">
+                    <span class="label">🌇 Pôr do Sol</span>
+                    <span class="time">${formatTime(times.sunset)}</span>
+                </div>
+                <div class="sun-card blue">
+                    <span class="label">🌃 Hora Azul</span>
+                    <span class="time">${formatTime(times.sunset)} - ${formatTime(times.dusk)}</span>
+                </div>
+            `;
+            document.getElementById('suncalc-results').innerHTML = html;
+        }
+
+        function initSunCalc() {
+            // Coordenadas padrão: SNC Lapa Scipião
+            renderSunCalc(-23.5266, -46.6963, "SNC Lapa Scipião (São Paulo)");
+        }
+
+        function getMyLocation() {
+            const btn = document.getElementById('btn-gps');
+            const btnOriginalText = btn.innerText;
+            btn.innerText = "A procurar satélites...";
+            btn.disabled = true;
+
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        renderSunCalc(position.coords.latitude, position.coords.longitude, "A sua localização atual (GPS)");
+                        btn.innerText = "📍 Atualizado para sua localização!";
+                        btn.style.borderColor = "#4caf50";
+                        btn.style.color = "#4caf50";
+                        setTimeout(() => {
+                            btn.innerText = btnOriginalText;
+                            btn.style.borderColor = "var(--accent-sun)";
+                            btn.style.color = "var(--accent-sun)";
+                            btn.disabled = false;
+                        }, 3000);
+                    },
+                    (error) => {
+                        alert("Não foi possível obter a localização. Verifique se o GPS está ativo e tem permissões.");
+                        btn.innerText = btnOriginalText;
+                        btn.disabled = false;
+                    },
+                    { timeout: 10000 } // Limite de 10 segundos para buscar o GPS
+                );
+            } else {
+                alert("Geolocalização não é suportada neste navegador.");
+                btn.innerText = btnOriginalText;
+                btn.disabled = false;
+            }
         }
     </script>
 </body>
