@@ -123,8 +123,32 @@
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        #main-menu { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; gap: 15px; padding: 20px; }
+        #main-menu { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; gap: 15px; padding: 20px; position: relative; }
+        
+        /* Botão de Sync Forçado no Menu */
+        .btn-sync {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.2s;
+            z-index: 10;
+        }
+        .btn-sync:hover { background: #2a2a2a; color: #fff; border-color: #555; }
+        .btn-sync.spinning { animation: spin 1s linear infinite; pointer-events: none; opacity: 0.5; }
+
         .menu-header { text-align: center; margin-bottom: 25px; animation: fadeIn 0.8s ease-in; display: flex; flex-direction: column; align-items: center;}
         
         .menu-turma-badge { font-size: 0.85rem; color: #fff; background-color: var(--bg-panel); border: 1px solid var(--border-color); padding: 6px 15px; border-radius: 20px; font-weight: normal; display: inline-block; margin-top: 15px; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
@@ -292,21 +316,23 @@
     <div id="splash-screen" class="hidden" onclick="dismissSplash()">
         <div style="font-size: 5rem; margin-bottom: 15px;">🎓</div>
         <div class="clara-logo-text">C.L.A.R.A.</div>
-        <div class="clara-tagline">Central de Luz e Apoio ao Repertório de Alunos</div>
+        <div class="clara-tagline">Central de Luz e Apoio ao Repertório de Autores</div>
         
         <div id="loading-text" style="color: var(--accent-snc); font-weight: bold; margin-top: 30px;">A carregar base de dados...</div>
         <div class="click-hint-splash hidden" id="click-hint">Toque em qualquer lugar para entrar</div>
-        <div class="splash-footer">Versão 5.9 | Desenvolvido por Harry Bour</div>
+        <div class="splash-footer">Versão 6.0 | Desenvolvido por Harry Bour</div>
     </div>
 
     <div id="view-menu" class="view hidden">
         <div id="main-menu">
+            <button id="btn-force-sync" class="btn-sync" onclick="forceSync()" title="Atualizar Dados da Planilha">🔄</button>
+
             <div class="menu-header">
                 <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
                     <div style="font-size: 2.2rem;">🎓</div>
                     <span style="font-size: 2.2rem; font-weight: 800; letter-spacing: 3px; color: #fff;">C.L.A.R.A.</span>
                 </div>
-                <div class="menu-turma-badge">Central de Luz e Apoio ao Repertório de Alunos</div>
+                <div class="menu-turma-badge">Central de Luz e Apoio ao Repertório de Autores</div>
             </div>
             
             <button class="menu-btn btn-aulas" onclick="requireAuth('view-aulas')"><span class="menu-icon">📅</span> Crono de Aulas SCI-TPF43M</button>
@@ -315,10 +341,10 @@
             <button class="menu-btn btn-datas" onclick="switchView('view-datas')"><span class="menu-icon">🌍</span> Datas de Interesse</button>
             
             <button class="menu-btn btn-dicio" onclick="switchView('view-dicio')"><span class="menu-icon">📖</span> Enciclopédia</button>
-            <button class="menu-btn btn-sun" onclick="switchView('view-suncalc'); initSunCalc();"><span class="menu-icon">☀️</span> Luz Natural</button>
+            <button class="menu-btn btn-sun" onclick="switchView('view-suncalc'); initSunCalc();"><span class="menu-icon">☀️</span> Unidade de Inteligência Solar</button>
             <button class="menu-btn btn-calc" onclick="switchView('view-calc')"><span class="menu-icon">🧮</span> Mapa de Luz</button>
             
-            <div class="clara-footer">C.L.A.R.A. v5.9 | Desenvolvido por Harry Bour</div>
+            <div class="clara-footer">C.L.A.R.A. v6.0 | Desenvolvido por Harry Bour</div>
         </div>
     </div>
 
@@ -395,7 +421,7 @@
         <h1 class="page-title" style="border-bottom-color: var(--accent-datas);">Datas de Interesse</h1>
         
         <div class="disclaimer-box" style="border-left-color: var(--accent-datas);">
-            <strong>🌍 Fique de olho:</strong> Exposições, editais, feiras e prazos externos relevantes para a área fotográfica.
+            <strong>🌍 Fique de olho:</strong> Exposições, editais, feiras e prazos externos relevantes para a área da fotografia e afins.
         </div>
         
         <div id="lista-datas">
@@ -434,7 +460,7 @@
 
     <div id="view-suncalc" class="view page-container hidden">
         <button class="btn-voltar" onclick="switchView('view-menu')">⬅ Menu Principal</button>
-        <h1 class="page-title" style="border-bottom-color: var(--accent-sun);">Luz Natural</h1>
+        <h1 class="page-title" style="border-bottom-color: var(--accent-sun);">Unidade de Inteligência Solar</h1>
         
         <div class="calc-settings" style="border-left-color: var(--accent-sun);">
             <label for="buscaLocalSunCalc">Localidade do ensaio:</label>
@@ -452,7 +478,7 @@
         <div id="weather-results" class="sun-card weather-card hidden"></div>
 
         <div id="suncalc-results"></div>
-        <div class="clara-footer">C.L.A.R.A. ASSISTENTE DE LUZ DE CAMPO</div>
+        <div class="clara-footer">C.L.A.R.A. GEOMETRIA DA LUZ</div>
     </div>
 
     <div id="view-calc" class="view page-container hidden">
@@ -595,6 +621,29 @@
         });
 
         // ==========================================
+        // SYNC FORÇADO
+        // ==========================================
+        function forceSync() {
+            const btn = document.getElementById('btn-force-sync');
+            btn.classList.add('spinning');
+            
+            // Limpa o cache local
+            localStorage.removeItem('tpf43m_aulas');
+            localStorage.removeItem('tpf43m_eventos');
+            localStorage.removeItem('tpf43m_datas');
+            localStorage.removeItem('tpf43m_dicio');
+            
+            // Variável mágica na URL para forçar o Google a dar o arquivo fresco
+            const noCacheUrl = `&nocache=${new Date().getTime()}`;
+            
+            carregarBancoDeDados(noCacheUrl).then(() => {
+                setTimeout(() => {
+                    btn.classList.remove('spinning');
+                }, 1000); // Mantém girando 1s para o usuário ver
+            });
+        }
+
+        // ==========================================
         // NOVO PARSER TSV (O "Tradutor Inteligente")
         // Resolve quebras de linha com Alt+Enter do Google Sheets
         // ==========================================
@@ -637,13 +686,14 @@
         // ==========================================
         // CARREGAMENTO DE DADOS (CACHE E OFFLINE)
         // ==========================================
-        async function carregarBancoDeDados() {
+        async function carregarBancoDeDados(noCacheStr = "") {
             const cacheAulas = localStorage.getItem('tpf43m_aulas'); 
             const cacheEventos = localStorage.getItem('tpf43m_eventos');
             const cacheDatas = localStorage.getItem('tpf43m_datas');
             const cacheDicio = localStorage.getItem('tpf43m_dicio');
             
-            if (cacheAulas && cacheEventos) { 
+            // Se for chamada normal (sem nocache) e tiver cache, usa ele
+            if (noCacheStr === "" && cacheAulas && cacheEventos) { 
                 processarAulas(cacheAulas); 
                 processarEventos(cacheEventos); 
                 if (cacheDatas) processarDatas(cacheDatas);
@@ -653,10 +703,10 @@
 
             try {
                 // Fetch das bases principais
-                const resAulas = await fetch(LINK_PLANILHA_AULAS);
+                const resAulas = await fetch(LINK_PLANILHA_AULAS + noCacheStr);
                 const tsvAulas = await resAulas.text();
                 
-                const resEventos = await fetch(LINK_PLANILHA_EVENTOS);
+                const resEventos = await fetch(LINK_PLANILHA_EVENTOS + noCacheStr);
                 const tsvEventos = await resEventos.text();
                 
                 if (tsvAulas !== cacheAulas || tsvEventos !== cacheEventos) {
@@ -668,7 +718,7 @@
 
                 // Fetch Datas de Interesse
                 if (LINK_PLANILHA_DATAS.startsWith("http")) {
-                    const resDatas = await fetch(LINK_PLANILHA_DATAS);
+                    const resDatas = await fetch(LINK_PLANILHA_DATAS + noCacheStr);
                     if (resDatas.ok) {
                         const tsvDatas = await resDatas.text();
                         if (tsvDatas !== cacheDatas) {
@@ -680,7 +730,7 @@
 
                 // Fetch Dicionário
                 if (LINK_PLANILHA_DICIO.startsWith("http")) {
-                    const resDicio = await fetch(LINK_PLANILHA_DICIO);
+                    const resDicio = await fetch(LINK_PLANILHA_DICIO + noCacheStr);
                     if (resDicio.ok) {
                         const tsvDicio = await resDicio.text();
                         if (tsvDicio !== cacheDicio) {
@@ -943,7 +993,7 @@
         }
 
         // ==========================================
-        // MÓDULO DE DATAS DE INTERESSE (NOVO)
+        // MÓDULO DE DATAS DE INTERESSE (Público e Histórico)
         // ==========================================
         function initDatas() { 
             const container = document.getElementById('lista-datas'); 
@@ -973,7 +1023,7 @@
                 const diffTime = dataEvento.getTime() - dataHojeLocal.getTime();
                 const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24)); 
                 
-                // REGRA ATUALIZADA: Todos os eventos passados ficam visíveis no histórico
+                // Sem trava de dias passados para manter o histórico
                 
                 let countdownHTML = ""; 
                 let extraClass = "datas-int"; 
@@ -994,7 +1044,7 @@
                 datasExibidas++; 
             }); 
             
-            if (datasExibidas === 0) { html = "<p style='text-align:center; color:#888;'>Nenhuma data de interesse recente ou futura.</p>"; }
+            if (datasExibidas === 0) { html = "<p style='text-align:center; color:#888;'>Nenhuma data de interesse carregada.</p>"; }
             container.innerHTML = html; 
         }
 
