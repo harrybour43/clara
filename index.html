@@ -265,7 +265,7 @@
         
         <div id="loading-text" style="color: var(--accent-snc); font-weight: bold; margin-top: 30px;">A carregar base de dados...</div>
         <div class="click-hint-splash hidden" id="click-hint">Toque em qualquer lugar para entrar</div>
-        <div class="splash-footer">Versão 6.6.1 | Desenvolvido por Harry Bour</div>
+        <div class="splash-footer">Versão 6.6.2 | Desenvolvido por Harry Bour</div>
     </div>
 
     <div id="view-menu" class="view hidden">
@@ -286,7 +286,7 @@
             <button class="menu-btn btn-sun" onclick="switchView('view-suncalc'); initSunCalc();"><span class="menu-icon">☀️</span>Luz Natural</button>
             <button class="menu-btn btn-calc" onclick="switchView('view-calc')"><span class="menu-icon">🧮</span>Mapa de Luz</button>
             
-            <div class="clara-footer">C.L.A.R.A. v6.6.1 | Desenvolvido por Harry Bour</div>
+            <div class="clara-footer">C.L.A.R.A. v6.6.2 | Desenvolvido por Harry Bour</div>
         </div>
     </div>
 
@@ -463,7 +463,7 @@
         const LINK_PLANILHA_AULAS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqOEEEZGFugY9MN7_0OsVjxvl02CxltDPfTx3LbUtte0mY7nLHWJxmu-ISbymcrS7cbyK__ixm43fI/pub?gid=0&single=true&output=tsv";
         const LINK_PLANILHA_EVENTOS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqOEEEZGFugY9MN7_0OsVjxvl02CxltDPfTx3LbUtte0mY7nLHWJxmu-ISbymcrS7cbyK__ixm43fI/pub?gid=1213067383&single=true&output=tsv";
         const LINK_PLANILHA_DATAS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqOEEEZGFugY9MN7_0OsVjxvl02CxltDPfTx3LbUtte0mY7nLHWJxmu-ISbymcrS7cbyK__ixm43fI/pub?gid=2069138341&single=true&output=tsv";
-        const LINK_PLANILHA_DICIO = "COLE_AQUI_O_LINK_TSV_DA_ABA_ENCICLOPEDIA"; 
+        const LINK_PLANILHA_DICIO = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqOEEEZGFugY9MN7_0OsVjxvl02CxltDPfTx3LbUtte0mY7nLHWJxmu-ISbymcrS7cbyK__ixm43fI/pub?gid=1758081988&single=true&output=tsv"; 
         
         let aulasArray = []; 
         let baseEventos = []; 
@@ -496,7 +496,7 @@
         // INICIALIZAÇÃO
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
-            const currentVersion = "6.6.1";
+            const currentVersion = "6.6.2";
             if (localStorage.getItem('clara_version') !== currentVersion) {
                 localStorage.clear();
                 localStorage.setItem('clara_version', currentVersion);
