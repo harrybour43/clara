@@ -162,7 +162,6 @@
         .menu-btn.btn-calc { border-left-color: var(--accent-calc); }
         .menu-btn.btn-dicio { border-left-color: var(--accent-dicio); }
         
-        /* Cor especial para o menu agrupado da turma */
         .menu-btn.btn-turma { border-left-color: var(--accent-snc); }
 
         .clara-footer { text-align: center; padding: 20px 0; margin-top: 20px; color: #555; font-size: 0.75rem; letter-spacing: 2px; width: 100%; text-transform: uppercase; font-weight: bold; border-top: 1px solid #222;}
@@ -249,7 +248,7 @@
         .modal-header { border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 15px; }
         
         .evento-card { background-color: var(--bg-panel); border-left: 5px solid var(--accent-eventos); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-        .evento-card.datas-int { border-left-color: var(--accent-datas); }
+        .evento-card.datas-int { border-left-color: var(--accent-datas); } 
         .evento-card.past { border-left-color: #555; background-color: #161616; opacity: 0.6; }
         .evento-card.past .evento-titulo, .evento-card.past .evento-desc, .evento-card.past .evento-data span, .evento-card.past .evento-countdown { color: #777 !important; }
         .evento-data { color: var(--accent-eventos); font-weight: bold; font-size: 1em; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
@@ -321,7 +320,7 @@
         
         <div id="loading-text" style="color: var(--accent-snc); font-weight: bold; margin-top: 30px;">A carregar base de dados...</div>
         <div class="click-hint-splash hidden" id="click-hint">Toque em qualquer lugar para entrar</div>
-        <div class="splash-footer">Versão 6.1 | Desenvolvido por Harry Bour</div>
+        <div class="splash-footer">Versão 6.2 | Desenvolvido por Harry Bour</div>
     </div>
 
     <div id="view-menu" class="view hidden">
@@ -341,10 +340,10 @@
             <button class="menu-btn btn-datas" onclick="switchView('view-datas')"><span class="menu-icon">🌍</span> Datas de Interesse</button>
             
             <button class="menu-btn btn-dicio" onclick="switchView('view-dicio')"><span class="menu-icon">📖</span> Enciclopédia</button>
-            <button class="menu-btn btn-sun" onclick="switchView('view-suncalc'); initSunCalc();"><span class="menu-icon">☀️</span> Unidade de Inteligência Solar</button>
-            <button class="menu-btn btn-calc" onclick="switchView('view-calc')"><span class="menu-icon">🧮</span> Mapa de Luz</button>
+            <button class="menu-btn btn-sun" onclick="switchView('view-suncalc'); initSunCalc();"><span class="menu-icon">☀️</span>Unidade de Inteligência Solar</button>
+            <button class="menu-btn btn-calc" onclick="switchView('view-calc')"><span class="menu-icon">🧮</span>Luz de Estúdio</button>
             
-            <div class="clara-footer">C.L.A.R.A. v6.1 | Desenvolvido por Harry Bour</div>
+            <div class="clara-footer">C.L.A.R.A. v6.2 | Desenvolvido por Harry Bour</div>
         </div>
     </div>
 
@@ -519,7 +518,11 @@
         const LINK_PLANILHA_AULAS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqOEEEZGFugY9MN7_0OsVjxvl02CxltDPfTx3LbUtte0mY7nLHWJxmu-ISbymcrS7cbyK__ixm43fI/pub?gid=0&single=true&output=tsv";
         const LINK_PLANILHA_EVENTOS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqOEEEZGFugY9MN7_0OsVjxvl02CxltDPfTx3LbUtte0mY7nLHWJxmu-ISbymcrS7cbyK__ixm43fI/pub?gid=1213067383&single=true&output=tsv";
         const LINK_PLANILHA_DICIO = "COLE_AQUI_O_LINK_TSV_DA_ABA_ENCICLOPEDIA"; 
-        const LINK_PLANILHA_DATAS = "COLE_AQUI_O_LINK_TSV_DATAS_DE_INTERESSE"; 
+        
+        // Link Atualizado para output=tsv 
+        // Lembre-se: se a aba de "Datas de Interesse" não for a primeira do documento, 
+        // você precisará adicionar &gid=NUMERO_DA_ABA antes do &output=tsv
+        const LINK_PLANILHA_DATAS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqOEEEZGFugY9MN7_0OsVjxvl02CxltDPfTx3LbUtte0mY7nLHWJxmu-ISbymcrS7cbyK__ixm43fI/pub?output=tsv"; 
         
         let aulasArray = []; 
         let baseEventos = []; 
@@ -851,6 +854,7 @@
             const cont = document.getElementById('dicio-alpha-area');
             const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
             let html = '';
+            
             letters.forEach(l => {
                 const activeClass = (l === currentLetter) ? 'active' : '';
                 html += `<div class="dicio-letter ${activeClass}" onclick="selectLetter('${l}')">${l}</div>`;
@@ -939,7 +943,6 @@
             const container = document.getElementById('lista-eventos'); 
             let html = ''; 
             
-            // Ordena os eventos por Data. Se a data for igual, ordena por Título.
             baseEventos.sort((a, b) => {
                 const dateA = new Date(a.data).getTime();
                 const dateB = new Date(b.data).getTime();
@@ -1001,7 +1004,6 @@
             const container = document.getElementById('lista-datas'); 
             let html = ''; 
             
-            // Ordena os eventos por Data. Se a data for igual, ordena por Título.
             baseDatas.sort((a, b) => {
                 const dateA = new Date(a.data).getTime();
                 const dateB = new Date(b.data).getTime();
@@ -1245,25 +1247,25 @@
                 witticism = "Lobisomens à solta! Luz dura noturna. A lua virou um rebatedor gigante lá no céu."; 
             } else if (phase < 0.72) { 
                 phaseName = "Gibosa Minguante"; emoji = "🌖"; 
-                witticism = "A lua está de dieta. Ainda tem luz suficiente para iluminar paisagens terrestres longas."; 
+                witticism = "A iluminação começa a diminuir, mas ainda há luz suficiente para iluminar paisagens terrestres longas."; 
             } else if (phase < 0.78) { 
                 phaseName = "Quarto Minguante"; emoji = "🌗"; 
                 witticism = "Fim de festa. Fase ideal para captar o nascer da lua silencioso de madrugada."; 
             } else { 
                 phaseName = "Minguante"; emoji = "🌘"; 
-                witticism = "Quase sumindo no horizonte. O céu noturno volta a ficar profundo e incrivelmente escuro."; 
+                witticism = "A lua está diminuindo o brilho, igual à bateria da sua câmera no fim do ensaio. O céu noturno volta a ficar incrivelmente escuro."; 
             }
 
             let supermoonTag = "";
             // Perigeu é aprox < 365,000 km.
             if (distance < 365000 && (phase > 0.45 && phase < 0.55)) {
                 supermoonTag = "<br><br>🌕 <strong>SUPER LUA:</strong> A lua está no perigeu (mais próxima da Terra). Prepare a teleobjetiva!";
-            } else if (distance > 400000 && (phase > 0.45 && phase < 0.55)) {
+            } else if (distance > 400000 && (phase < 0.05 || phase > 0.95)) {
                 supermoonTag = "<br><br>🌑 <strong>Minilua (Micro Lua):</strong> A lua está no apogeu (mais distante).";
             }
             
             let eclipseText = (phase < 0.03 || phase > 0.97 || (phase > 0.47 && phase < 0.53)) 
-                ? " (Em fases extremas, há risco de eclipses lunares ou solares, confira seu calendário astronômico!)." : "";
+                ? " (Em fases extremas, há risco de eclipses, confira seu calendário astronômico!)." : "";
 
             return `
                 <div class="sun-card moon-card" style="flex-direction: column; align-items: flex-start;">
