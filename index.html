@@ -138,7 +138,7 @@
         <div class="splash-curso">SCI-TPF43M</div>
         <div id="loading-text" style="color: var(--accent-snc); font-weight: bold; margin-top: 20px;">A carregar base de dados...</div>
         <div class="click-hint-splash hidden" id="click-hint">Toque em qualquer lugar para entrar</div>
-        <div class="splash-footer">Versão 4.8 | Desenvolvido por Harry Bour</div>
+        <div class="splash-footer">Versão 4.9 | Desenvolvido por Harry Bour</div>
     </div>
 
     <div id="view-menu" class="view hidden">
@@ -157,7 +157,9 @@
     <div id="view-aulas" class="view page-container hidden">
         <button class="btn-voltar" onclick="switchView('view-menu')">⬅ Menu Principal</button>
         <h1 class="page-title" style="border-bottom-color: var(--accent-aulas);">Crono de Aulas</h1>
-        <div class="disclaimer-box"><strong>⚠️ Atenção:</strong> O Cronograma pode sofrer alterações não refletidas nesta ferramenta em tempo real.</div>
+        <div class="disclaimer-box">
+            <strong>⚠️ Atenção:</strong> O Cronograma pode sofrer alterações não refletidas nessa ferramenta em tempo real. Essa ferramenta é um apoio, mas cabe ao aluno a responsabilidade individual de acompanhar o cronograma, disponível por meios oficiais da instituição de ensino.
+        </div>
         <div class="search-box">
             <label for="filtroUC">Pesquisar datas por UC:</label>
             <select id="filtroUC"><option value="">-- Selecione uma UC para ver todas as datas --</option></select>
@@ -188,6 +190,9 @@
     <div id="view-eventos" class="view page-container hidden">
         <button class="btn-voltar" onclick="switchView('view-menu')">⬅ Menu Principal</button>
         <h1 class="page-title" style="border-bottom-color: var(--accent-eventos);">Eventos e Prazos</h1>
+        <div class="disclaimer-box">
+            <strong>⚠️ Atenção:</strong> O Cronograma pode sofrer alterações não refletidas nessa ferramenta em tempo real. Essa ferramenta é um apoio, mas cabe ao aluno a responsabilidade individual de acompanhar o cronograma, disponível por meios oficiais da instituição de ensino.
+        </div>
         <div id="lista-eventos"></div>
     </div>
 
@@ -211,7 +216,7 @@
             </select>
         </div>
 
-        <button class="btn-add-luz" onclick="addLight()">+ Adicionar Ponto de Luz (Máx 5)</button>
+        <button class="btn-add-luz" onclick="addLight()">+ Adicionar Ponto de Luz (Principal + 5)</button>
         <div id="lightsContainer"></div>
     </div>
 
@@ -532,8 +537,9 @@
         let lights = []; let lightIdCounter = 0;
         function getAbsoluteValue(stopIndex, tenths) { return (stopIndex * 10) + tenths; }
         
+        // Ajuste no limite da função addLight
         function addLight(role = 'Preenchimento', baseStop = 6, tenths = 0) {
-            if (lights.length >= 5) return alert("Máximo de 5 luzes.");
+            if (lights.length >= 6) return alert("Máximo de 1 Luz Principal + 5 Secundárias atingido.");
             lights.push({ id: lightIdCounter++, role, baseStop, tenths });
             renderLights();
         }
