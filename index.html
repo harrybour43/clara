@@ -114,10 +114,6 @@
             animation: fadeIn 0.5s ease-in; 
         }
         
-        /* Ícones C.L.A.R.A. antigos mantidos no CSS caso precise reverter */
-        .clara-icon { width: 70px; height: 70px; fill: var(--accent-snc); margin-bottom: 15px; }
-        .clara-icon-small { width: 35px; height: 35px; fill: var(--accent-snc); }
-        
         .clara-logo-text { font-size: 2.8rem; font-weight: 800; letter-spacing: 4px; color: #fff; margin: 0; }
         .clara-tagline { color: var(--accent-snc); font-weight: bold; font-size: 0.9rem; margin-top: 8px; text-transform: uppercase; max-width: 80%; line-height: 1.4;}
         
@@ -204,6 +200,9 @@
         .calc-settings { background-color: var(--bg-panel); padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid var(--accent-calc); }
         .calc-settings label { font-weight: bold; color: #ccc; display: block; margin-bottom: 8px;}
         .calc-settings select { width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #444; background-color: #2c2c2c; color: white; font-size: 1em;}
+        .calc-settings input[type="date"] { width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #444; background-color: #2c2c2c; color: white; font-size: 1em; font-family: inherit; box-sizing: border-box; }
+        /* Ajuste para o ícone de calendário no input date em WebKit */
+        .calc-settings input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
         
         .btn-add-luz { background-color: var(--accent-calc); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 20px; font-size: 1rem; }
         
@@ -252,7 +251,7 @@
         
         <div id="loading-text" style="color: var(--accent-snc); font-weight: bold; margin-top: 20px;">A carregar base de dados...</div>
         <div class="click-hint-splash hidden" id="click-hint">Toque em qualquer lugar para entrar</div>
-        <div class="splash-footer">Versão 5.4 | Desenvolvido por Harry Bour</div>
+        <div class="splash-footer">Versão 5.5 | Desenvolvido por Harry Bour</div>
     </div>
 
     <div id="view-menu" class="view hidden">
@@ -271,7 +270,7 @@
             <button class="menu-btn btn-sun" onclick="switchView('view-suncalc'); initSunCalc();"><span class="menu-icon">☀️</span> Luz Natural</button>
             <button class="menu-btn btn-calc" onclick="switchView('view-calc')"><span class="menu-icon">🧮</span> Mapa de Luz</button>
             
-            <div class="clara-footer">C.L.A.R.A. v5.4 | Desenvolvido por Harry Bour</div>
+            <div class="clara-footer">C.L.A.R.A. v5.5 | Desenvolvido por Harry Bour</div>
         </div>
     </div>
 
@@ -356,7 +355,12 @@
 
     <div id="view-suncalc" class="view page-container hidden">
         <button class="btn-voltar" onclick="switchView('view-menu')">⬅ Menu Principal</button>
-        <h1 class="page-title" style="border-bottom-color: var(--accent-sun);">Luz Natural (Hoje)</h1>
+        <h1 class="page-title" style="border-bottom-color: var(--accent-sun);">Luz Natural</h1>
+        
+        <div class="calc-settings">
+            <label for="dataSunCalc">Selecione a data do ensaio:</label>
+            <input type="date" id="dataSunCalc" onchange="atualizarDataSunCalc()">
+        </div>
         
         <button class="btn-gps" id="btn-gps" onclick="getMyLocation()">📍 Usar a minha localização atual</button>
         <div id="suncalc-results"></div>
@@ -949,20 +953,23 @@
         }
 
         // ==========================================
-        // MÓDULO DE LUZ NATURAL (SUNCALC)
+        // MÓDULO DE LUZ NATURAL (SUNCALC) COM CALENDÁRIO
         // ==========================================
+        let locLat = -23.5266; 
+        let locLng = -46.6963;
+        let locName = "SNC Lapa Scipião (São Paulo)";
+        
         function formatTime(date) { 
             if (isNaN(date.getTime())) return "--:--"; 
             return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); 
         }
         
-        function renderSunCalc(lat, lng, locationName) { 
-            const today = new Date(); 
-            const times = SunCalc.getTimes(today, lat, lng); 
+        function renderSunCalc(targetDate) { 
+            const times = SunCalc.getTimes(targetDate, locLat, locLng); 
             
             let html = `
                 <div style="margin-bottom: 15px; color: var(--text-muted); font-size: 0.9em; text-align: center;">
-                    📍 Referência: <strong>${locationName}</strong>
+                    📍 Referência: <strong>${locName}</strong>
                 </div>
             `; 
             
@@ -993,7 +1000,25 @@
         }
         
         function initSunCalc() { 
-            renderSunCalc(-23.5266, -46.6963, "SNC Lapa Scipião (São Paulo)"); 
+            const hoje = new Date();
+            const dataInput = document.getElementById('dataSunCalc');
+            
+            // Define o valor inicial do input para hoje no formato YYYY-MM-DD
+            if(!dataInput.value) {
+                dataInput.value = toISODate(hoje);
+            }
+            
+            renderSunCalc(hoje); 
+        }
+
+        function atualizarDataSunCalc() {
+            const dataString = document.getElementById('dataSunCalc').value;
+            if(!dataString) return;
+            
+            const [ano, mes, dia] = dataString.split('-');
+            const targetDate = new Date(ano, mes - 1, dia, 12, 0, 0); // Meio-dia para evitar fuso horário
+            
+            renderSunCalc(targetDate);
         }
         
         function getMyLocation() { 
@@ -1006,7 +1031,16 @@
             if ("geolocation" in navigator) { 
                 navigator.geolocation.getCurrentPosition(
                     (position) => { 
-                        renderSunCalc(position.coords.latitude, position.coords.longitude, "Sua localização atual (GPS)"); 
+                        locLat = position.coords.latitude;
+                        locLng = position.coords.longitude;
+                        locName = "Sua localização atual (GPS)";
+                        
+                        const dataString = document.getElementById('dataSunCalc').value;
+                        const [ano, mes, dia] = dataString.split('-');
+                        const targetDate = new Date(ano, mes - 1, dia, 12, 0, 0);
+
+                        renderSunCalc(targetDate); 
+                        
                         btn.innerText = "📍 Atualizado!"; 
                         btn.style.borderColor = "#4caf50"; 
                         btn.style.color = "#4caf50"; 
