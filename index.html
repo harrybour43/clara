@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hub TPF43M - SNC Lapa Scipião</title>
+    <title>Assistente TPF43M - SNC Lapa Scipião</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
+
     <style>
         /* ==========================================
            1. VARIÁVEIS GERAIS E TEMA ESCURO
@@ -17,88 +20,26 @@
             --accent-calc: #0056b3;
             --accent-aulas: #4caf50;
             --accent-eventos: #9c27b0;
+            --accent-sun: #ffb300;
+            --accent-dicio: #e91e63;
             --accent-warning: #ff9800; 
             --border-color: #333;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-        }
-
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 0; overflow-x: hidden; }
         .hidden { display: none !important; }
-
-        .btn-voltar {
-            background-color: transparent;
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            padding: 10px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-bottom: 20px;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.2s;
-        }
+        .btn-voltar { background-color: transparent; color: var(--text-main); border: 1px solid var(--border-color); padding: 10px 15px; border-radius: 6px; cursor: pointer; margin-bottom: 20px; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
         .btn-voltar:hover { background-color: #2a2a2a; }
-
-        .page-container {
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-            min-height: 100vh;
-            box-sizing: border-box;
-            padding-bottom: 80px;
-        }
-
-        h1.page-title {
-            color: #fff;
-            margin-top: 0;
-            margin-bottom: 20px;
-            font-weight: 300;
-            text-align: center;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 10px;
-        }
-
-        .disclaimer-box {
-            background-color: rgba(255, 152, 0, 0.1);
-            border-left: 4px solid var(--accent-warning);
-            color: var(--text-main);
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            font-size: 0.85rem;
-            line-height: 1.5;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
+        .page-container { padding: 20px; max-width: 800px; margin: 0 auto; min-height: 100vh; box-sizing: border-box; padding-bottom: 80px; }
+        h1.page-title { color: #fff; margin-top: 0; margin-bottom: 20px; font-weight: 300; text-align: center; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+        
+        .disclaimer-box { background-color: rgba(255, 152, 0, 0.1); border-left: 4px solid var(--accent-warning); color: var(--text-main); padding: 15px; border-radius: 4px; margin-bottom: 20px; font-size: 0.85rem; line-height: 1.5; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .disclaimer-box strong { color: var(--accent-warning); }
 
         /* ==========================================
            2. SPLASH SCREEN E MENU
            ========================================== */
-        #splash-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--bg-color);
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            cursor: pointer;
-            padding: 20px;
-            box-sizing: border-box;
-            animation: fadeIn 0.5s ease-in;
-        }
-        
+        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-color); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; cursor: pointer; padding: 20px; box-sizing: border-box; animation: fadeIn 0.5s ease-in; }
         .splash-subtitle { font-size: 1.2rem; color: var(--accent-snc); margin: 5px 0 30px 0; font-weight: bold; }
         .splash-curso { font-size: 1.1rem; color: var(--text-muted); margin: 2px 0; }
         .splash-turma { font-size: 1.4rem; font-weight: bold; color: #fff; margin: 10px 0; border: 1px solid var(--border-color); padding: 5px 15px; border-radius: 4px; display: inline-block;}
@@ -108,91 +49,73 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
 
-        #main-menu {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            gap: 20px;
-            padding: 20px;
-        }
-
-        .menu-header { text-align: center; margin-bottom: 20px; animation: fadeIn 0.8s ease-in; }
-        .menu-turma-badge {
-            font-size: 1.2rem; color: #fff; background-color: var(--bg-panel);
-            border: 1px solid var(--border-color); padding: 8px 20px;
-            border-radius: 20px; font-weight: bold; display: inline-block;
-            margin-top: 10px; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-        }
+        #main-menu { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; gap: 15px; padding: 20px; }
+        .menu-header { text-align: center; margin-bottom: 15px; animation: fadeIn 0.8s ease-in; }
+        .menu-turma-badge { font-size: 1.2rem; color: #fff; background-color: var(--bg-panel); border: 1px solid var(--border-color); padding: 8px 20px; border-radius: 20px; font-weight: bold; display: inline-block; margin-top: 10px; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
         
-        .menu-btn {
-            background-color: var(--bg-panel); border: 1px solid var(--border-color);
-            color: #fff; width: 100%; max-width: 400px; padding: 25px 20px;
-            border-radius: 12px; font-size: 1.2rem; font-weight: bold;
-            cursor: pointer; display: flex; align-items: center; gap: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.2s, background-color 0.2s;
-        }
-        .menu-btn:hover { transform: translateY(-3px); background-color: #2a2a2a; }
-        .menu-icon { font-size: 2rem; }
+        .menu-btn { background-color: var(--bg-panel); border: 1px solid var(--border-color); color: #fff; width: 100%; max-width: 400px; padding: 20px 20px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.2s, background-color 0.2s; }
+        .menu-btn:hover { transform: translateY(-2px); background-color: #2a2a2a; }
+        .menu-icon { font-size: 1.8rem; }
         .menu-btn.btn-aulas { border-left: 5px solid var(--accent-aulas); }
-        .menu-btn.btn-calc { border-left: 5px solid var(--accent-calc); }
         .menu-btn.btn-eventos { border-left: 5px solid var(--accent-eventos); }
-        .menu-btn:disabled { opacity: 0.6; cursor: wait; }
+        .menu-btn.btn-sun { border-left: 5px solid var(--accent-sun); }
+        .menu-btn.btn-calc { border-left: 5px solid var(--accent-calc); }
+        .menu-btn.btn-dicio { border-left: 5px solid var(--accent-dicio); }
 
         /* ==========================================
-           3. PAINEL DE AULAS
+           3. PAINEL DE AULAS & EVENTOS
            ========================================== */
         .search-box { background-color: var(--bg-panel); padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid var(--accent-snc); }
         .search-box label { display: block; margin-bottom: 8px; font-weight: bold; color: #ccc; }
         .search-box select { width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #444; background-color: #2c2c2c; color: white; font-size: 1em; }
-        
-        .uc-encerrada {
-            background-color: #1b2a20; color: #4caf50; padding: 12px; text-align: center; 
-            font-weight: bold; border-radius: 4px; margin-bottom: 15px; 
-            border: 1px solid #4caf50; font-size: 0.9em; letter-spacing: 0.5px;
-        }
-
+        .uc-encerrada { background-color: #1b2a20; color: #4caf50; padding: 12px; text-align: center; font-weight: bold; border-radius: 4px; margin-bottom: 15px; border: 1px solid #4caf50; font-size: 0.9em; letter-spacing: 0.5px; }
         .aulas-container { display: flex; flex-direction: column; gap: 15px; }
         .card { background-color: var(--bg-panel); border-left: 5px solid var(--accent-aulas); padding: 20px; border-radius: 8px; cursor: pointer; transition: transform 0.2s; }
-        
-        /* Aulas Passadas - Totalmente em Cinza */
-        .card.past { 
-            border-left-color: #555; 
-            background-color: #161616; 
-            opacity: 0.6; 
-        }
-        .card.past .status, .card.past .date, .card.past .details, .card.past .details span { 
-            color: #777 !important; 
-        }
-        
+        .card.past { border-left-color: #555; background-color: #161616; opacity: 0.6; }
+        .card.past .status, .card.past .date, .card.past .details, .card.past .details span { color: #777 !important; }
         .card.today { border-left-color: #e91e63; background-color: #2a1b20; }
         .card.tomorrow { border-left-color: var(--accent-warning); background-color: #2a2015; }
         .card.next { border-left-color: #2196f3; }
         .card.cancelled { border-left-color: #f44336; opacity: 0.8; }
-        
         .status { font-size: 0.85em; text-transform: uppercase; font-weight: bold; margin-bottom: 10px; }
-        .today .status { color: #ff4081; } 
-        .tomorrow .status { color: var(--accent-warning); }
-        .next .status { color: #64b5f6; } 
-        .cancelled .status { color: #f44336; }
-        
+        .today .status { color: #ff4081; } .tomorrow .status { color: var(--accent-warning); } .next .status { color: #64b5f6; } .cancelled .status { color: #f44336; }
         .date { font-size: 1.2em; margin-bottom: 5px; color: #fff; }
         .details { font-size: 1em; color: #ccc; }
+        
         .footer-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--bg-panel); display: flex; justify-content: center; padding: 15px 10px; z-index: 100; box-sizing: border-box; box-shadow: 0 -4px 10px rgba(0,0,0,0.5); }
         .footer-nav-inner { display: flex; justify-content: space-between; width: 100%; max-width: 600px; gap: 5px; }
         .footer-nav button { background-color: #2c2c2c; color: #ccc; border: 1px solid #444; padding: 10px; border-radius: 6px; cursor: pointer; flex: 1; font-weight: bold; }
         .footer-nav button.active { background-color: var(--accent-aulas); color: white; border-color: var(--accent-aulas); }
         
-        /* Modal Aulas */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
-        .modal-box { background: var(--bg-panel); border-top: 5px solid var(--accent-eventos); padding: 25px; border-radius: 12px; width: 100%; max-width: 500px; position: relative; }
+        .modal-box { background: var(--bg-panel); border-top: 5px solid var(--accent-eventos); padding: 25px; border-radius: 12px; width: 100%; max-width: 500px; position: relative; max-height: 80vh; overflow-y: auto;}
         .modal-close { position: absolute; top: 15px; right: 15px; background: none; border: none; color: #aaa; font-size: 1.8em; cursor: pointer; }
         .modal-header { border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 15px; }
+        
+        .evento-card { background-color: var(--bg-panel); border-left: 5px solid var(--accent-eventos); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        .evento-card.past { border-left-color: #555; background-color: #161616; opacity: 0.6; }
+        .evento-card.past .evento-titulo, .evento-card.past .evento-desc, .evento-card.past .evento-data span, .evento-card.past .evento-countdown { color: #777 !important; }
+        .evento-data { color: var(--accent-eventos); font-weight: bold; font-size: 1em; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .evento-countdown { font-weight: normal; font-size: 0.85em; opacity: 0.8; }
+        .evento-countdown.urgente { color: var(--accent-warning); font-weight: bold; opacity: 1; }
+        .evento-countdown.hoje { color: #ff4081; font-weight: bold; opacity: 1; }
+        .evento-titulo { font-size: 1.2em; color: #fff; margin-bottom: 5px; }
+        .evento-desc { color: #ccc; font-size: 0.95em; line-height: 1.4; }
 
         /* ==========================================
-           4. CALCULADORA DE F-STOP
+           4. LUZ NATURAL E CALCULADORA
            ========================================== */
+        .sun-card { background-color: var(--bg-panel); padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid #555; }
+        .sun-card.golden { border-left-color: var(--accent-sun); background-color: rgba(255, 179, 0, 0.1); }
+        .sun-card.blue { border-left-color: #2196f3; background-color: rgba(33, 150, 243, 0.1); }
+        .sun-card .time { font-size: 1.2em; font-weight: bold; color: #fff; }
+        .sun-card .label { color: #ccc; font-size: 0.9em; }
+        .btn-gps { background-color: transparent; color: var(--accent-sun); border: 1px solid var(--accent-sun); padding: 12px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 20px; transition: 0.2s; }
+        .btn-gps:hover { background-color: rgba(255, 179, 0, 0.1); }
+        
+        .calc-settings { background-color: var(--bg-panel); padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid var(--accent-calc); }
+        .calc-settings label { font-weight: bold; color: #ccc; display: block; margin-bottom: 8px;}
+        .calc-settings select { width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #444; background-color: #2c2c2c; color: white; font-size: 1em;}
         .btn-add-luz { background-color: var(--accent-calc); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 20px; font-size: 1rem; }
         .light-row { border: 1px solid var(--border-color); padding: 15px; margin-bottom: 15px; border-radius: 6px; background-color: var(--bg-panel); display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
         .light-row.principal { border-left: 5px solid #28a745; border-color: #28a745; }
@@ -200,51 +123,41 @@
         .nudge-btns { display: flex; gap: 5px; }
         .nudge-btns button { background-color: #495057; border: none; cursor: pointer; font-size: 0.9em; padding: 8px 10px; }
         .result-text { width: 100%; margin-top: 10px; font-size: 0.95rem; line-height: 1.5; }
+        .success-box { color: #4caf50; font-weight: bold; background-color: rgba(76, 175, 80, 0.1); padding: 12px; border-radius: 4px; border-left: 4px solid #4caf50; margin-top: 10px; }
 
         /* ==========================================
-           5. EVENTOS
+           5. ENCICLOPÉDIA / DICIONÁRIO
            ========================================== */
-        .evento-card { background-color: var(--bg-panel); border-left: 5px solid var(--accent-eventos); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        .dicio-search { width: 100%; padding: 15px; border-radius: 8px; border: 1px solid #444; background-color: var(--bg-panel); color: white; font-size: 1rem; margin-bottom: 20px; box-sizing: border-box; }
+        .dicio-search:focus { outline: none; border-color: var(--accent-dicio); }
+        .dicio-card { background-color: var(--bg-panel); border-left: 5px solid var(--accent-dicio); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        .dicio-term { font-size: 1.2em; font-weight: bold; color: #fff; margin-bottom: 5px; }
+        .dicio-cat { font-size: 0.8em; background: #333; padding: 4px 10px; border-radius: 12px; color: var(--accent-dicio); display: inline-block; margin-bottom: 10px; font-weight: bold; letter-spacing: 0.5px;}
+        .dicio-def { font-size: 0.95em; color: #ccc; line-height: 1.5; white-space: pre-wrap;}
         
-        /* Eventos Passados - Em cinza */
-        .evento-card.past {
-            border-left-color: #555;
-            background-color: #161616;
-            opacity: 0.6;
-        }
-        .evento-card.past .evento-titulo, 
-        .evento-card.past .evento-desc, 
-        .evento-card.past .evento-data span,
-        .evento-card.past .evento-countdown {
-            color: #777 !important;
-        }
-
-        .evento-data { color: var(--accent-eventos); font-weight: bold; font-size: 1em; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .evento-countdown { font-weight: normal; font-size: 0.85em; opacity: 0.8; }
-        .evento-countdown.urgente { color: var(--accent-warning); font-weight: bold; opacity: 1; }
-        .evento-countdown.hoje { color: #ff4081; font-weight: bold; opacity: 1; }
-        .evento-titulo { font-size: 1.2em; color: #fff; margin-bottom: 5px; }
-        .evento-desc { color: #ccc; font-size: 0.95em; line-height: 1.4; }
+        .dicio-letter { background: #2c2c2c; color: #fff; width: 35px; height: 35px; display: flex; justify-content: center; align-items: center; border-radius: 4px; cursor: pointer; border: 1px solid #444; font-weight: bold; transition: 0.2s;}
+        .dicio-letter:hover, .dicio-letter.active { background: var(--accent-dicio); border-color: var(--accent-dicio); }
+        .dicio-list-view { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        @media (max-width: 600px) { .dicio-list-view { grid-template-columns: 1fr; } }
+        
+        .dicio-list-item { background: var(--bg-panel); padding: 12px 15px; border-radius: 6px; border-left: 3px solid var(--accent-dicio); cursor: pointer; transition: 0.2s;}
+        .dicio-list-item:hover { background: #2a2a2a; }
+        .dicio-list-term { font-weight: bold; color: #fff; margin-bottom: 3px; font-size: 1.1em;}
+        .dicio-list-def-preview { font-size: 0.85em; color: #888; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     </style>
 </head>
 <body>
 
-    <div id="splash-screen" onclick="dismissSplash()">
+    <div id="splash-screen" class="hidden" onclick="dismissSplash()">
         <div style="font-size: 4rem; margin-bottom: 10px;">📷</div>
-        
-        <div style="background-color: var(--accent-warning); color: #000; padding: 4px 12px; border-radius: 15px; font-size: 0.75rem; font-weight: bold; margin-bottom: 15px; letter-spacing: 1px;">
-            PROJETO DE ALUNOS (NÃO-OFICIAL)
-        </div>
-
+        <div style="background-color: var(--accent-warning); color: #000; padding: 4px 12px; border-radius: 15px; font-size: 0.75rem; font-weight: bold; margin-bottom: 15px; letter-spacing: 1px;">PROJETO DE ALUNOS (NÃO-OFICIAL)</div>
         <div class="splash-subtitle">SNC Lapa - Scipião</div>
         <div class="splash-curso">Técnico em Processos Fotográficos</div>
         <div class="splash-turma">Turma 43M</div>
         <div class="splash-curso">SCI-TPF43M</div>
-        <div id="loading-text" style="color: var(--accent-snc); font-weight: bold; margin-top: 20px;">
-            Sincronizando banco de dados...
-        </div>
+        <div id="loading-text" style="color: var(--accent-snc); font-weight: bold; margin-top: 20px;">A carregar base de dados...</div>
         <div class="click-hint-splash hidden" id="click-hint">Toque em qualquer lugar para entrar</div>
-        <div class="splash-footer">Versão 4.5 | Desenvolvido por Harry Bour</div>
+        <div class="splash-footer">Versão 5.2 | Desenvolvido por Harry Bour</div>
     </div>
 
     <div id="view-menu" class="view hidden">
@@ -253,545 +166,688 @@
                 <div style="font-size: 3rem; margin-bottom: 5px;">🎓</div>
                 <div class="menu-turma-badge">Turma: SCI-TPF43M</div>
             </div>
-
-            <button class="menu-btn btn-aulas" onclick="switchView('view-aulas')">
-                <span class="menu-icon">📅</span> Crono de Aulas
-            </button>
-            <button class="menu-btn btn-eventos" onclick="switchView('view-eventos')">
-                <span class="menu-icon">📷</span> Eventos da Turma
-            </button>
-            <button class="menu-btn btn-calc" onclick="switchView('view-calc')">
-                <span class="menu-icon">🧮</span> Calculadora
-            </button>
+            <button class="menu-btn btn-aulas" onclick="switchView('view-aulas')"><span class="menu-icon">📅</span> Crono de Aulas</button>
+            <button class="menu-btn btn-eventos" onclick="switchView('view-eventos')"><span class="menu-icon">📷</span> Eventos da Turma</button>
+            <button class="menu-btn btn-dicio" onclick="switchView('view-dicio')"><span class="menu-icon">📖</span> Enciclopédia</button>
+            <button class="menu-btn btn-sun" onclick="switchView('view-suncalc'); initSunCalc();"><span class="menu-icon">☀️</span> Luz Natural</button>
+            <button class="menu-btn btn-calc" onclick="switchView('view-calc')"><span class="menu-icon">🧮</span> Mapa de Luz</button>
         </div>
     </div>
 
     <div id="view-aulas" class="view page-container hidden">
         <button class="btn-voltar" onclick="switchView('view-menu')">⬅ Menu Principal</button>
         <h1 class="page-title" style="border-bottom-color: var(--accent-aulas);">Crono de Aulas</h1>
-
         <div class="disclaimer-box">
             <strong>⚠️ Atenção:</strong> O Cronograma pode sofrer alterações não refletidas nessa ferramenta em tempo real. Essa ferramenta é um apoio, mas cabe ao aluno a responsabilidade individual de acompanhar o cronograma, disponível por meios oficiais da instituição de ensino.
         </div>
-
         <div class="search-box">
             <label for="filtroUC">Pesquisar datas por UC:</label>
-            <select id="filtroUC">
-                <option value="">-- Selecione uma UC para ver todas as datas --</option>
-            </select>
+            <select id="filtroUC"><option value="">-- Selecione uma UC para ver todas as datas --</option></select>
         </div>
-
         <div class="aulas-container" id="painel-aulas"></div>
         <div class="aulas-container" id="resultado-pesquisa" style="display: none;"></div>
-
         <div class="footer-nav" id="rodape-semanas">
             <div class="footer-nav-inner">
                 <button id="btn-passada" onclick="mudarSemana(-1)">Semana Passada</button>
-                <button id="btn-atual" class="active" onclick="mudarSemana(0)">Essa Semana</button>
-                <button id="btn-que-vem" onclick="mudarSemana(1)">Semana que Vem</button>
+                <button id="btn-atual" class="active" onclick="mudarSemana(0)">Esta Semana</button>
+                <button id="btn-que-vem" onclick="mudarSemana(1)">Próxima Semana</button>
             </div>
         </div>
     </div>
-
+    
     <div class="modal-overlay" id="modalConteudo" onclick="fecharModal(event)">
         <div class="modal-box">
             <button class="modal-close" onclick="fecharModalBtn()">&times;</button>
             <div class="modal-header">
-                <div id="modalData" style="font-size: 0.9em; color: #aaa; text-transform: uppercase;">Data</div>
-                <div id="modalUC" style="font-size: 1.2em; font-weight: bold; color: #fff;">UC e Aula</div>
+                <div id="modalData" style="font-size: 0.9em; color: #aaa; text-transform: uppercase;">Data/Categoria</div>
+                <div id="modalUC" style="font-size: 1.2em; font-weight: bold; color: #fff;">UC/Termo</div>
                 <div id="modalProf" style="color: var(--accent-eventos); font-weight: bold;">Professor</div>
             </div>
-            <div id="modalTexto" style="line-height: 1.6; white-space: pre-wrap;">Detalhes adicionais não fornecidos na planilha.</div>
+            <div id="modalTexto" style="line-height: 1.6; white-space: pre-wrap; color: #e0e0e0;">Detalhes adicionais.</div>
         </div>
-    </div>
-
-    <div id="view-calc" class="view page-container hidden">
-        <button class="btn-voltar" onclick="switchView('view-menu')">⬅ Menu Principal</button>
-        <h1 class="page-title" style="border-bottom-color: var(--accent-calc);">Mapa de Luz</h1>
-        <button class="btn-add-luz" onclick="addLight()">+ Adicionar Ponto de Luz (Máx 5)</button>
-        <div id="lightsContainer"></div>
     </div>
 
     <div id="view-eventos" class="view page-container hidden">
         <button class="btn-voltar" onclick="switchView('view-menu')">⬅ Menu Principal</button>
         <h1 class="page-title" style="border-bottom-color: var(--accent-eventos);">Eventos e Prazos</h1>
-
         <div class="disclaimer-box">
             <strong>⚠️ Atenção:</strong> O Cronograma pode sofrer alterações não refletidas nessa ferramenta em tempo real. Essa ferramenta é um apoio, mas cabe ao aluno a responsabilidade individual de acompanhar o cronograma, disponível por meios oficiais da instituição de ensino.
         </div>
-
         <div id="lista-eventos"></div>
     </div>
 
+    <div id="view-dicio" class="view page-container hidden">
+        <button class="btn-voltar" onclick="switchView('view-menu')">⬅ Menu Principal</button>
+        
+        <h1 class="page-title" style="border-bottom-color: var(--accent-dicio);">
+            Enciclopédia 🚧
+            <br>
+            <span style="font-size: 0.45em; color: #aaa; text-transform: uppercase; letter-spacing: 1px;">Ferramenta em desenvolvimento</span>
+        </h1>
+        
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
+            <button id="btn-toggle-dicio" onclick="toggleDicioMode()" style="background: transparent; color: var(--accent-dicio); border: 1px solid var(--accent-dicio); padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s;">
+                🔤 Ver Índice A-Z
+            </button>
+        </div>
+
+        <div id="dicio-search-area">
+            <input type="text" id="buscaDicio" class="dicio-search" placeholder="Buscar termo, categoria ou dica..." onkeyup="filtrarDicio()">
+        </div>
+
+        <div id="dicio-alpha-area" class="hidden" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 20px;">
+        </div>
+        
+        <div id="lista-dicio">
+            <p style="text-align:center; color:#888;">Nenhum dado vinculado ainda.</p>
+        </div>
+    </div>
+
+    <div id="view-suncalc" class="view page-container hidden">
+        <button class="btn-voltar" onclick="switchView('view-menu')">⬅ Menu Principal</button>
+        <h1 class="page-title" style="border-bottom-color: var(--accent-sun);">Luz Natural (Hoje)</h1>
+        <button class="btn-gps" id="btn-gps" onclick="getMyLocation()">📍 Usar a minha localização atual</button>
+        <div id="suncalc-results"></div>
+    </div>
+
+    <div id="view-calc" class="view page-container hidden">
+        <button class="btn-voltar" onclick="switchView('view-menu')">⬅ Menu Principal</button>
+        <h1 class="page-title" style="border-bottom-color: var(--accent-calc);">Mapa de Luz</h1>
+        
+        <div class="calc-settings">
+            <label for="cenarioFundo">Cenário de Fundo:</label>
+            <select id="cenarioFundo" onchange="renderLights()">
+                <option value="livre">Livre (Ajuste Manual)</option>
+                <option value="branco">Fundo Branco</option>
+                <option value="cinza">Fundo Cinza</option>
+            </select>
+        </div>
+
+        <button class="btn-add-luz" onclick="addLight()">+ Adicionar Ponto de Luz (Principal + 5)</button>
+        <div id="lightsContainer"></div>
+    </div>
+
     <script>
-        // ==========================================
-        // 1. LINKS TSV DO GOOGLE SHEETS
-        // ==========================================
+        // DECLARAÇÕES GLOBAIS
         const LINK_PLANILHA_AULAS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqOEEEZGFugY9MN7_0OsVjxvl02CxltDPfTx3LbUtte0mY7nLHWJxmu-ISbymcrS7cbyK__ixm43fI/pub?gid=0&single=true&output=tsv";
         const LINK_PLANILHA_EVENTOS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqOEEEZGFugY9MN7_0OsVjxvl02CxltDPfTx3LbUtte0mY7nLHWJxmu-ISbymcrS7cbyK__ixm43fI/pub?gid=1213067383&single=true&output=tsv";
-        // ==========================================
-
-        let aulasArray = [];
-        let baseEventos = [];
+        const LINK_PLANILHA_DICIO = "COLE_AQUI_O_LINK_TSV_DA_ABA_ENCICLOPEDIA"; 
+        
+        let aulasArray = []; 
+        let baseEventos = []; 
+        let dicioArray = [];
         let dadosCarregados = false;
+        
+        let dicioMode = 'search'; 
+        let currentLetter = 'A';
 
-        const nomesUC = {
-            "UC1": "Captar imagens", "UC2": "Iluminar cenas", "UC3": "Revelação digital", "UC4": "Manipular imagens",
+        const nomesUC = { 
+            "UC1": "Captar imagens", "UC2": "Iluminar cenas", "UC3": "Revelação digital", "UC4": "Manipular imagens", 
             "UC5": "Finalizar imagens", "UC6": "Captar vídeos", "UC7": "Fotojornalismo", "UC8": "Social", 
             "UC9": "Moda e Editoriais", "UC10": "Propaganda e Publi", "UC11": "Paisagem e Arq", 
-            "UC12": "Ensaios fotográficos", "UC13": "Portfólio", "UC14": "Projeto Integrador"
+            "UC12": "Ensaios fotográficos", "UC13": "Portfólio", "UC14": "Projeto Integrador" 
         };
 
+        // INICIALIZAÇÃO
         document.addEventListener('DOMContentLoaded', () => {
-            if (!sessionStorage.getItem('splashShown')) {
-                document.getElementById('splash-screen').classList.remove('hidden');
-            } else {
-                dismissSplash();
-            }
-            
+            gerenciarSplash();
             carregarBancoDeDados();
-            if(lights.length === 0) { addLight('Principal', 8, 6); addLight('Preenchimento', 5, 5); }
+            if(lights.length === 0) { 
+                addLight('Principal', 6, 0); 
+                addLight('Preenchimento', 4, 0); 
+            }
         });
 
-        async function carregarBancoDeDados() {
-            const cacheAulas = localStorage.getItem('tpf43m_aulas');
-            const cacheEventos = localStorage.getItem('tpf43m_eventos');
+        // SPLASH SCREEN LOGIC
+        function gerenciarSplash() {
+            if (sessionStorage.getItem('sessionActive')) {
+                document.getElementById('splash-screen').classList.add('hidden');
+                document.getElementById('view-menu').classList.remove('hidden');
+                return;
+            }
+            sessionStorage.setItem('sessionActive', 'true');
+            let count = parseInt(localStorage.getItem('visitCount') || '0');
+            if (count === 0 || count >= 10) {
+                document.getElementById('splash-screen').classList.remove('hidden');
+                localStorage.setItem('visitCount', '1');
+            } else {
+                localStorage.setItem('visitCount', (count + 1).toString());
+                document.getElementById('splash-screen').classList.add('hidden');
+                document.getElementById('view-menu').classList.remove('hidden');
+            }
+        }
 
-            if (cacheAulas && cacheEventos) {
-                processarAulas(cacheAulas);
-                processarEventos(cacheEventos);
+        // CARREGAMENTO DE DADOS COM CACHE
+        async function carregarBancoDeDados() {
+            const cacheAulas = localStorage.getItem('tpf43m_aulas'); 
+            const cacheEventos = localStorage.getItem('tpf43m_eventos');
+            const cacheDicio = localStorage.getItem('tpf43m_dicio');
+            
+            if (cacheAulas && cacheEventos) { 
+                processarAulas(cacheAulas); 
+                processarEventos(cacheEventos); 
+                if(cacheDicio) processarDicio(cacheDicio);
                 liberarAcesso(); 
             }
 
             try {
                 const resAulas = await fetch(LINK_PLANILHA_AULAS);
                 const tsvAulas = await resAulas.text();
-
                 const resEventos = await fetch(LINK_PLANILHA_EVENTOS);
                 const tsvEventos = await resEventos.text();
-
+                
                 if (tsvAulas !== cacheAulas || tsvEventos !== cacheEventos) {
-                    localStorage.setItem('tpf43m_aulas', tsvAulas);
+                    localStorage.setItem('tpf43m_aulas', tsvAulas); 
                     localStorage.setItem('tpf43m_eventos', tsvEventos);
-                    
-                    processarAulas(tsvAulas);
-                    processarEventos(tsvEventos);
-                    
-                    initAulas();
-                    initEventos();
+                    processarAulas(tsvAulas); 
+                    processarEventos(tsvEventos); 
                 }
-            } catch (error) {
-                console.error("Modo offline ou erro de conexão:", error);
-                if (!dadosCarregados) {
-                    document.getElementById('loading-text').innerText = "Você está offline. Exibindo apenas ferramentas locais.";
+
+                if (LINK_PLANILHA_DICIO.startsWith("http")) {
+                    const resDicio = await fetch(LINK_PLANILHA_DICIO);
+                    if (resDicio.ok) {
+                        const tsvDicio = await resDicio.text();
+                        if (tsvDicio !== cacheDicio) {
+                            localStorage.setItem('tpf43m_dicio', tsvDicio);
+                            processarDicio(tsvDicio);
+                        }
+                    }
                 }
-            } finally {
-                if (!dadosCarregados) liberarAcesso();
+            } catch (error) { 
+                console.error("Modo Offline Ativado:", error); 
+                if (!dadosCarregados) document.getElementById('loading-text').innerText = "Modo Offline Ativado."; 
+            } finally { 
+                if (!dadosCarregados) liberarAcesso(); 
             }
         }
 
-        function processarAulas(tsv) {
-            const linhas = tsv.split('\n').slice(1);
-            aulasArray = [];
-            
-            linhas.forEach(linha => {
-                if(!linha.trim()) return;
-                const colunas = linha.split('\t').map(col => col.trim().replace(/^"|"$/g, ''));
-                
+        function processarAulas(tsv) { 
+            const linhas = tsv.split('\n').slice(1); 
+            aulasArray = []; 
+            linhas.forEach(linha => { 
+                if(!linha.trim()) return; 
+                const colunas = linha.split('\t').map(col => col.trim().replace(/^"|"$/g, '')); 
                 if(colunas.length >= 4 && colunas[0] && colunas[1]) {
                     aulasArray.push({
-                        data: colunas[0],
-                        codigoUC: colunas[1],
-                        uc: `${colunas[1]} - ${nomesUC[colunas[1]] || ''}`,
-                        docente: colunas[2],
-                        aula: colunas[3]
-                    });
+                        data: colunas[0], codigoUC: colunas[1], uc: `${colunas[1]} - ${nomesUC[colunas[1]] || ''}`, docente: colunas[2], aula: colunas[3]
+                    }); 
                 }
-            });
+            }); 
         }
 
-        function processarEventos(tsv) {
-            const linhas = tsv.split('\n').slice(1);
-            baseEventos = [];
+        function processarEventos(tsv) { 
+            const linhas = tsv.split('\n').slice(1); 
+            baseEventos = []; 
+            linhas.forEach(linha => { 
+                if(!linha.trim()) return; 
+                const colunas = linha.split('\t').map(col => col.trim().replace(/^"|"$/g, '')); 
+                if(colunas.length >= 2 && colunas[0] && colunas[1]) {
+                    baseEventos.push({ data: colunas[0], titulo: colunas[1], desc: colunas[2] || '' }); 
+                }
+            }); 
+        }
 
+        function processarDicio(tsv) {
+            const linhas = tsv.split('\n').slice(1); 
+            dicioArray = [];
             linhas.forEach(linha => {
                 if(!linha.trim()) return;
                 const colunas = linha.split('\t').map(col => col.trim().replace(/^"|"$/g, ''));
-                
-                if(colunas.length >= 2 && colunas[0] && colunas[1]) {
-                    baseEventos.push({
-                        data: colunas[0],
-                        titulo: colunas[1],
-                        desc: colunas[2] || ''
-                    });
+                if(colunas.length >= 3 && colunas[0]) {
+                    dicioArray.push({ termo: colunas[0], categoria: colunas[1] || 'Geral', definicao: colunas[2] });
                 }
             });
+            if(dicioMode === 'search') renderDicioSearch();
         }
 
-        function liberarAcesso() {
-            dadosCarregados = true;
-            initAulas();
-            initEventos();
-
-            document.getElementById('loading-text').style.display = 'none';
-            document.getElementById('click-hint').classList.remove('hidden');
-
-            if (sessionStorage.getItem('splashShown')) {
-                dismissSplash();
-            }
+        function liberarAcesso() { 
+            dadosCarregados = true; 
+            initAulas(); 
+            initEventos(); 
+            document.getElementById('loading-text').style.display = 'none'; 
+            document.getElementById('click-hint').classList.remove('hidden'); 
         }
 
-        function dismissSplash() {
-            sessionStorage.setItem('splashShown', 'true');
-            document.getElementById('splash-screen').classList.add('hidden');
-            document.getElementById('view-menu').classList.remove('hidden');
+        function dismissSplash() { 
+            document.getElementById('splash-screen').classList.add('hidden'); 
+            document.getElementById('view-menu').classList.remove('hidden'); 
         }
 
-        function switchView(viewId) {
-            document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
-            document.getElementById(viewId).classList.remove('hidden');
-            
-            const rodapeAulas = document.getElementById('rodape-semanas');
+        function switchView(viewId) { 
+            document.querySelectorAll('.view').forEach(v => v.classList.add('hidden')); 
+            document.getElementById(viewId).classList.remove('hidden'); 
+            const rodapeAulas = document.getElementById('rodape-semanas'); 
             if(rodapeAulas) {
-                rodapeAulas.style.display = (viewId === 'view-aulas' && document.getElementById('filtroUC').value === "") ? 'flex' : 'none';
+                rodapeAulas.style.display = (viewId === 'view-aulas' && document.getElementById('filtroUC').value === "") ? 'flex' : 'none'; 
             }
-            window.scrollTo(0,0);
+            window.scrollTo(0,0); 
         }
 
-        /* --- MÓDULO: EVENTOS DA TURMA --- */
-        function initEventos() {
-            const container = document.getElementById('lista-eventos');
+        // ==========================================
+        // ENCICLOPÉDIA
+        // ==========================================
+        function toggleDicioMode() {
+            const btn = document.getElementById('btn-toggle-dicio');
+            const areaSearch = document.getElementById('dicio-search-area');
+            const areaAlpha = document.getElementById('dicio-alpha-area');
+            
+            if (dicioMode === 'search') {
+                dicioMode = 'index';
+                btn.innerText = "🔍 Voltar para Busca";
+                btn.style.backgroundColor = "var(--accent-dicio)";
+                btn.style.color = "#fff";
+                areaSearch.classList.add('hidden');
+                areaAlpha.classList.remove('hidden');
+                renderAlphabet();
+                renderDicioIndex(currentLetter);
+            } else {
+                dicioMode = 'search';
+                btn.innerText = "🔤 Ver Índice A-Z";
+                btn.style.backgroundColor = "transparent";
+                btn.style.color = "var(--accent-dicio)";
+                areaSearch.classList.remove('hidden');
+                areaAlpha.classList.add('hidden');
+                document.getElementById('buscaDicio').value = '';
+                renderDicioSearch();
+            }
+        }
+
+        function renderAlphabet() {
+            const cont = document.getElementById('dicio-alpha-area');
+            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
             let html = '';
-            baseEventos.sort((a, b) => new Date(a.data) - new Date(b.data));
+            letters.forEach(l => {
+                const activeClass = l === currentLetter ? 'active' : '';
+                html += `<div class="dicio-letter ${activeClass}" onclick="selectLetter('${l}')">${l}</div>`;
+            });
+            cont.innerHTML = html;
+        }
 
-            const hojeDate = new Date();
-            const hojeY = hojeDate.getFullYear();
-            const hojeM = hojeDate.getMonth();
-            const hojeD = hojeDate.getDate();
+        function selectLetter(l) {
+            currentLetter = l;
+            renderAlphabet();
+            renderDicioIndex(l);
+        }
 
-            if (baseEventos.length === 0) {
-                container.innerHTML = "<p style='text-align:center; color:#888;'>Não foi possível carregar os eventos no momento.</p>";
+        function filtrarDicio() {
+            if (dicioMode === 'search') {
+                const valor = document.getElementById('buscaDicio').value;
+                renderDicioSearch(valor);
+            }
+        }
+
+        function renderDicioSearch(filtro = "") {
+            const container = document.getElementById('lista-dicio');
+            if (dicioArray.length === 0) {
+                container.innerHTML = "<p style='text-align:center; color:#888;'>Nenhum dado vinculado ainda.</p>";
                 return;
             }
 
-            let eventosExibidos = 0;
+            let html = "";
+            const filtroLower = filtro.toLowerCase();
 
-            baseEventos.forEach(ev => {
-                const [ano, mes, dia] = ev.data.split('-');
-                if(!ano || !mes || !dia) return; 
+            const itensFiltrados = dicioArray.filter(item => {
+                return item.termo.toLowerCase().includes(filtroLower) || 
+                       item.categoria.toLowerCase().includes(filtroLower) ||
+                       item.definicao.toLowerCase().includes(filtroLower);
+            }).sort((a, b) => a.termo.localeCompare(b.termo));
 
-                const dataFormatada = `${dia}/${mes}/${ano}`;
-                const dataEvento = new Date(ano, mes - 1, dia);
-                const dataHojeLocal = new Date(hojeY, hojeM, hojeD);
-                const diffTime = dataEvento.getTime() - dataHojeLocal.getTime();
-                const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
-
-                // REGRA 1: Ignora eventos que aconteceram há mais de 10 dias
-                if (diffDays < -10) return;
-
-                let countdownHTML = "";
-                let extraClass = "";
-
-                if (diffDays > 1) { 
-                    countdownHTML = `<span class="evento-countdown">(Faltam ${diffDays} dias)</span>`; 
-                } else if (diffDays === 1) { 
-                    countdownHTML = `<span class="evento-countdown urgente">(É amanhã!)</span>`; 
-                } else if (diffDays === 0) { 
-                    countdownHTML = `<span class="evento-countdown hoje">(É hoje!)</span>`; 
-                } else if (diffDays === -1) {
-                    countdownHTML = `<span class="evento-countdown">(Ontem)</span>`;
-                    extraClass = "past";
-                } else { 
-                    countdownHTML = `<span class="evento-countdown">(Há ${Math.abs(diffDays)} dias)</span>`;
-                    extraClass = "past";
-                }
-
-                html += `
-                    <div class="evento-card ${extraClass}">
-                        <div class="evento-data">
-                            <span>📅 ${dataFormatada}</span>
-                            ${countdownHTML}
-                        </div>
-                        <div class="evento-titulo">${ev.titulo}</div>
-                        <div class="evento-desc">${ev.desc}</div>
-                    </div>
-                `;
-                eventosExibidos++;
-            });
-
-            if (eventosExibidos === 0) {
-                html = "<p style='text-align:center; color:#888;'>Nenhum evento recente ou futuro programado.</p>";
+            if (itensFiltrados.length === 0) {
+                container.innerHTML = "<p style='text-align:center; color:#888;'>Nenhum termo encontrado.</p>"; return;
             }
 
+            itensFiltrados.forEach(item => {
+                html += `
+                    <div class="dicio-card">
+                        <div class="dicio-term">${item.termo}</div>
+                        <div class="dicio-cat">${item.categoria}</div>
+                        <div class="dicio-def">${item.definicao}</div>
+                    </div>
+                `;
+            });
             container.innerHTML = html;
         }
 
-        /* --- MÓDULO: PAINEL DE AULAS --- */
-        function toISODate(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
-        function formatarDataBR(iso) { const [a, m, d] = iso.split('-'); return `${d}/${m}/${a}`; }
-        function getDiaDaSemana(iso) {
-            const d = new Date(iso.split('-')[0], iso.split('-')[1] - 1, iso.split('-')[2], 12, 0, 0);
-            return ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'][d.getDay()];
+        function renderDicioIndex(letter) {
+            const container = document.getElementById('lista-dicio');
+            if (dicioArray.length === 0) {
+                container.innerHTML = "<p style='text-align:center; color:#888;'>Nenhum dado vinculado ainda.</p>";
+                return;
+            }
+
+            const itensFiltrados = dicioArray.filter(item => item.termo.toUpperCase().startsWith(letter))
+                                             .sort((a, b) => a.termo.localeCompare(b.termo));
+
+            if (itensFiltrados.length === 0) {
+                container.innerHTML = `<p style='text-align:center; color:#888; margin-top:20px;'>Nenhum verbete registrado com a letra <strong>${letter}</strong>.</p>`;
+                return;
+            }
+
+            let html = '<div class="dicio-list-view">';
+            itensFiltrados.forEach(item => {
+                const termoSafe = item.termo.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                const catSafe = item.categoria.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                const defSafe = item.definicao.replace(/'/g, "\\'").replace(/"/g, "&quot;").replace(/\n/g, '\\n');
+
+                html += `
+                    <div class="dicio-list-item" onclick="abrirVerbeteModal('${termoSafe}', '${catSafe}', '${defSafe}')">
+                        <div class="dicio-list-term">${item.termo}</div>
+                        <div class="dicio-list-def-preview">${item.definicao}</div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
         }
 
-        function abrirModal(dataISO, ucNome, profNome, numAula) {
-            document.getElementById('modalData').innerText = `${getDiaDaSemana(dataISO)}, ${formatarDataBR(dataISO)}`;
-            document.getElementById('modalUC').innerText = `${ucNome} - Aula ${numAula}`;
-            document.getElementById('modalProf').innerText = `Prof. ${profNome}`;
-            document.getElementById('modalConteudo').style.display = 'flex';
+        // ==========================================
+        // EVENTOS
+        // ==========================================
+        function initEventos() { 
+            const container = document.getElementById('lista-eventos'); 
+            let html = ''; 
+            baseEventos.sort((a, b) => new Date(a.data) - new Date(b.data)); 
+            
+            const hojeDate = new Date(); 
+            const hojeY = hojeDate.getFullYear(); 
+            const hojeM = hojeDate.getMonth(); 
+            const hojeD = hojeDate.getDate(); 
+            
+            if (baseEventos.length === 0) { 
+                container.innerHTML = "<p style='text-align:center; color:#888;'>Sem eventos.</p>"; 
+                return; 
+            } 
+            
+            let eventosExibidos = 0; 
+            baseEventos.forEach(ev => { 
+                const [ano, mes, dia] = ev.data.split('-'); 
+                if(!ano || !mes || !dia) return; 
+                
+                const diffDays = Math.round((new Date(ano, mes - 1, dia).getTime() - new Date(hojeY, hojeM, hojeD).getTime()) / (1000 * 60 * 60 * 24)); 
+                if (diffDays < -10) return; 
+                
+                let countdownHTML = ""; 
+                let extraClass = ""; 
+                
+                if (diffDays > 1) countdownHTML = `<span class="evento-countdown">(Faltam ${diffDays} dias)</span>`; 
+                else if (diffDays === 1) countdownHTML = `<span class="evento-countdown urgente">(É amanhã!)</span>`; 
+                else if (diffDays === 0) countdownHTML = `<span class="evento-countdown hoje">(É hoje!)</span>`; 
+                else if (diffDays === -1) { countdownHTML = `<span class="evento-countdown">(Ontem)</span>`; extraClass = "past"; } 
+                else { countdownHTML = `<span class="evento-countdown">(Há ${Math.abs(diffDays)} dias)</span>`; extraClass = "past"; } 
+                
+                html += `<div class="evento-card ${extraClass}"><div class="evento-data"><span>📅 ${dia}/${mes}/${ano}</span>${countdownHTML}</div><div class="evento-titulo">${ev.titulo}</div><div class="evento-desc">${ev.desc}</div></div>`; 
+                eventosExibidos++; 
+            }); 
+            
+            if (eventosExibidos === 0) html = "<p style='text-align:center; color:#888;'>Nenhum evento recente.</p>"; 
+            container.innerHTML = html; 
+        }
+
+        // ==========================================
+        // AULAS E MODAL UNIVERSAL
+        // ==========================================
+        function toISODate(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; } 
+        function formatarDataBR(iso) { const [a, m, d] = iso.split('-'); return `${d}/${m}/${a}`; } 
+        function getDiaDaSemana(iso) { return ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'][new Date(iso.split('-')[0], iso.split('-')[1] - 1, iso.split('-')[2], 12, 0, 0).getDay()]; } 
+        
+        function abrirModal(dataISO, ucNome, profNome, numAula) { 
+            document.getElementById('modalData').innerText = `${getDiaDaSemana(dataISO)}, ${formatarDataBR(dataISO)}`; 
+            document.getElementById('modalData').style.color = "#aaa"; 
+            document.getElementById('modalUC').innerText = `${ucNome} - Aula ${numAula}`; 
+            document.getElementById('modalProf').innerText = `Prof. ${profNome}`; 
+            document.getElementById('modalTexto').innerText = "Detalhes adicionais não fornecidos na base de dados."; 
+            document.getElementById('modalConteudo').style.display = 'flex'; 
+            document.body.style.overflow = 'hidden'; 
+        } 
+        
+        function abrirVerbeteModal(termo, categoria, definicao) {
+            document.getElementById('modalData').innerText = categoria;
+            document.getElementById('modalData').style.color = "var(--accent-dicio)"; 
+            document.getElementById('modalUC').innerText = termo;
+            document.getElementById('modalProf').innerText = ""; 
+            document.getElementById('modalTexto').innerText = definicao;
+            document.getElementById('modalConteudo').style.display = 'flex'; 
             document.body.style.overflow = 'hidden'; 
         }
 
-        function fecharModal(e) { if (e.target.id === 'modalConteudo') fecharModalBtn(); }
-        function fecharModalBtn() { document.getElementById('modalConteudo').style.display = 'none'; document.body.style.overflow = 'auto'; }
-
-        function initAulas() {
-            const select = document.getElementById('filtroUC');
+        function fecharModal(e) { if (e.target.id === 'modalConteudo') fecharModalBtn(); } 
+        function fecharModalBtn() { document.getElementById('modalConteudo').style.display = 'none'; document.body.style.overflow = 'auto'; } 
+        
+        function initAulas() { 
+            const select = document.getElementById('filtroUC'); 
             select.innerHTML = '<option value="">-- Selecione uma UC para ver todas as datas --</option>'; 
-            for (const [codigo, nome] of Object.entries(nomesUC)) {
-                const opt = document.createElement('option');
-                opt.value = codigo; opt.textContent = `${codigo} - ${nome}`;
-                select.appendChild(opt);
+            for (const [codigo, nome] of Object.entries(nomesUC)) { 
+                const opt = document.createElement('option'); 
+                opt.value = codigo; 
+                opt.textContent = `${codigo} - ${nome}`; 
+                select.appendChild(opt); 
+            } 
+            mudarSemana(0); 
+        } 
+        
+        document.getElementById('filtroUC').addEventListener('change', function(e) { 
+            const ucSelec = e.target.value; 
+            if (!ucSelec) return window.limparBusca(); 
+            
+            document.getElementById('painel-aulas').style.display = 'none'; 
+            document.getElementById('rodape-semanas').style.display = 'none'; 
+            const resPanel = document.getElementById('resultado-pesquisa'); 
+            resPanel.style.display = 'flex'; 
+            
+            const dUC = aulasArray.filter(a => a.codigoUC === ucSelec); 
+            const hojeStr = toISODate(new Date()); 
+            const todasEncerradas = dUC.length > 0 && dUC.every(a => a.data < hojeStr); 
+            
+            let h = `<div class="card" style="border-left-color: #ff9800;"><button onclick="limparBusca()" class="btn-voltar" style="border-color: #ff9800; color:#ff9800;">⬅ Limpar Busca</button><h3 style="margin-top:0; color:#ff9800;">${nomesUC[ucSelec]}</h3>`; 
+            if (todasEncerradas) h += `<div class="uc-encerrada">✅ UC Encerrada para a Turma 43M</div>`; 
+            if(dUC.length === 0) h += `<p>Nenhuma aula agendada na planilha.</p>`; 
+            
+            dUC.forEach(a => { 
+                const isPast = a.data < hojeStr; 
+                const rowStyle = isPast ? "padding:10px 0; border-bottom:1px solid #333; color:#777; opacity:0.6;" : "padding:10px 0; border-bottom:1px solid #333;"; 
+                h += `<div style="${rowStyle}" onclick="abrirModal('${a.data}', '${a.uc}', '${a.docente}', '${a.aula}')"><strong>${formatarDataBR(a.data)}</strong> - Prof. ${a.docente} (Aula ${a.aula})</div>`; 
+            }); 
+            resPanel.innerHTML = h + `</div>`; 
+        }); 
+        
+        window.limparBusca = function() { 
+            document.getElementById('filtroUC').value = ""; 
+            document.getElementById('resultado-pesquisa').style.display = 'none'; 
+            document.getElementById('painel-aulas').style.display = 'flex'; 
+            document.getElementById('rodape-semanas').style.display = 'flex'; 
+        } 
+        
+        function mudarSemana(offset) { 
+            document.getElementById('btn-passada').classList.toggle('active', offset === -1); 
+            document.getElementById('btn-atual').classList.toggle('active', offset === 0); 
+            document.getElementById('btn-que-vem').classList.toggle('active', offset === 1); 
+            
+            const hoje = new Date(); 
+            const seg = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() - hoje.getDay() + 1 + (offset * 7), 12, 0, 0); 
+            const sex = new Date(seg.getFullYear(), seg.getMonth(), seg.getDate() + 4, 12, 0, 0); 
+            const hojeStr = toISODate(hoje); 
+            const amanha = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() + 1); 
+            const amanhaStr = toISODate(amanha); 
+            
+            const aSemana = aulasArray.filter(a => a.data >= toISODate(seg) && a.data <= toISODate(sex)); 
+            let html = `<h3 style="text-align:center;">Sua Semana</h3>`; 
+            
+            if (aSemana.length === 0) {
+                html += `<div class="card"><div class="details" style="text-align:center;">Nenhuma aula programada para esta semana.</div></div>`; 
             }
-            mudarSemana(0);
+            
+            aSemana.forEach(a => { 
+                const isCancelled = a.aula.toLowerCase().includes('cancelada'); 
+                let cardClass = ''; let statusMsg = ''; 
+                
+                if (isCancelled) { 
+                    cardClass = 'cancelled'; statusMsg = `❌ CANCELADA - ${getDiaDaSemana(a.data)}`; 
+                } else { 
+                    if (a.data === hojeStr) { cardClass = 'today'; statusMsg = '🔥 HOJE'; } 
+                    else if (a.data === amanhaStr) { cardClass = 'tomorrow'; statusMsg = `${getDiaDaSemana(a.data)} - AMANHÃ! ⚡`; } 
+                    else if (a.data < hojeStr) { cardClass = 'past'; statusMsg = `✅ ${getDiaDaSemana(a.data)}`; } 
+                    else { cardClass = 'next'; statusMsg = `⏳ ${getDiaDaSemana(a.data)}`; } 
+                } 
+                html += `<div class="card ${cardClass}" onclick="abrirModal('${a.data}', '${a.uc}', '${a.docente}', '${a.aula}')"><div class="status">${statusMsg}</div><div class="date">${formatarDataBR(a.data)}</div><div class="details"><span style="font-weight:bold;">${a.uc}</span><br>Prof: ${a.docente}</div></div>`; 
+            }); 
+            document.getElementById('painel-aulas').innerHTML = html; 
         }
 
-        document.getElementById('filtroUC').addEventListener('change', function(e) {
-            const ucSelec = e.target.value;
-            if (!ucSelec) return window.limparBusca();
-            
-            document.getElementById('painel-aulas').style.display = 'none';
-            document.getElementById('rodape-semanas').style.display = 'none';
-            const resPanel = document.getElementById('resultado-pesquisa');
-            resPanel.style.display = 'flex';
-
-            const dUC = aulasArray.filter(a => a.codigoUC === ucSelec);
-            const hojeStr = toISODate(new Date());
-            const todasEncerradas = dUC.length > 0 && dUC.every(a => a.data < hojeStr);
-
-            let h = `<div class="card" style="border-left-color: #ff9800;">
-                        <button onclick="limparBusca()" class="btn-voltar" style="border-color: #ff9800; color:#ff9800;">⬅ Limpar Busca</button>
-                        <h3 style="margin-top:0; color:#ff9800;">${nomesUC[ucSelec]}</h3>`;
-            
-            if (todasEncerradas) {
-                h += `<div class="uc-encerrada">✅ UC Encerrada para a Turma 43M</div>`;
-            }
-
-            if(dUC.length === 0) h += `<p>Nenhuma aula agendada na planilha.</p>`;
-            dUC.forEach(a => {
-                const isPast = a.data < hojeStr;
-                const rowStyle = isPast ? "padding:10px 0; border-bottom:1px solid #333; color:#777; opacity:0.6;" : "padding:10px 0; border-bottom:1px solid #333;";
-
-                h += `<div style="${rowStyle}" onclick="abrirModal('${a.data}', '${a.uc}', '${a.docente}', '${a.aula}')">
-                        <strong>${formatarDataBR(a.data)}</strong> - Prof. ${a.docente} (Aula ${a.aula})
-                      </div>`;
-            });
-            resPanel.innerHTML = h + `</div>`;
-        });
-
-        window.limparBusca = function() {
-            document.getElementById('filtroUC').value = "";
-            document.getElementById('resultado-pesquisa').style.display = 'none';
-            document.getElementById('painel-aulas').style.display = 'flex';
-            document.getElementById('rodape-semanas').style.display = 'flex';
+        // ==========================================
+        // LUZ NATURAL E CALCULADORA (Estúdio)
+        // ==========================================
+        function formatTime(date) { if (isNaN(date.getTime())) return "--:--"; return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); }
+        
+        function renderSunCalc(lat, lng, locationName) { 
+            const today = new Date(); const times = SunCalc.getTimes(today, lat, lng); 
+            let html = `<div style="margin-bottom: 15px; color: var(--text-muted); font-size: 0.9em; text-align: center;">📍 Referência: <strong>${locationName}</strong></div>`; 
+            html += `<div class="sun-card"><span class="label">🌅 Nascer do Sol</span><span class="time">${formatTime(times.sunrise)}</span></div><div class="sun-card golden"><span class="label">✨ Hora Dourada (Manhã)</span><span class="time">${formatTime(times.sunriseEnd)} - ${formatTime(times.goldenHourEnd)}</span></div><div class="sun-card golden"><span class="label">✨ Hora Dourada (Tarde)</span><span class="time">${formatTime(times.goldenHour)} - ${formatTime(times.sunsetStart)}</span></div><div class="sun-card"><span class="label">🌇 Pôr do Sol</span><span class="time">${formatTime(times.sunset)}</span></div><div class="sun-card blue"><span class="label">🌃 Hora Azul</span><span class="time">${formatTime(times.sunset)} - ${formatTime(times.dusk)}</span></div>`; 
+            document.getElementById('suncalc-results').innerHTML = html; 
+        }
+        
+        function initSunCalc() { renderSunCalc(-23.5266, -46.6963, "SNC Lapa Scipião (São Paulo)"); }
+        
+        function getMyLocation() { 
+            const btn = document.getElementById('btn-gps'); const btnOriginalText = btn.innerText; btn.innerText = "Buscando..."; btn.disabled = true; 
+            if ("geolocation" in navigator) { 
+                navigator.geolocation.getCurrentPosition((position) => { 
+                    renderSunCalc(position.coords.latitude, position.coords.longitude, "Sua localização atual (GPS)"); 
+                    btn.innerText = "📍 Atualizado!"; btn.style.borderColor = "#4caf50"; btn.style.color = "#4caf50"; 
+                    setTimeout(() => { btn.innerText = btnOriginalText; btn.style.borderColor = "var(--accent-sun)"; btn.style.color = "var(--accent-sun)"; btn.disabled = false; }, 3000); 
+                }, (error) => { alert("Erro ao obter GPS."); btn.innerText = btnOriginalText; btn.disabled = false; }, { timeout: 10000 }); 
+            } else { alert("Geolocalização não suportada."); btn.innerText = btnOriginalText; btn.disabled = false; } 
         }
 
-        function mudarSemana(offset) {
-            document.getElementById('btn-passada').classList.toggle('active', offset === -1);
-            document.getElementById('btn-atual').classList.toggle('active', offset === 0);
-            document.getElementById('btn-que-vem').classList.toggle('active', offset === 1);
-            
-            const hoje = new Date();
-            const seg = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() - hoje.getDay() + 1 + (offset * 7), 12, 0, 0);
-            const sex = new Date(seg.getFullYear(), seg.getMonth(), seg.getDate() + 4, 12, 0, 0);
-            
-            const hojeStr = toISODate(hoje);
-            const amanha = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() + 1);
-            const amanhaStr = toISODate(amanha);
-
-            const aSemana = aulasArray.filter(a => a.data >= toISODate(seg) && a.data <= toISODate(sex));
-            
-            let html = `<h3 style="text-align:center;">Sua Semana</h3>`;
-            if (aSemana.length === 0) html += `<div class="card"><div class="details" style="text-align:center;">Nenhuma aula programada para esta semana.</div></div>`;
-            
-            aSemana.forEach(a => {
-                const isCancelled = a.aula.toLowerCase().includes('cancelada');
-                let cardClass = '';
-                let statusMsg = '';
-
-                if (isCancelled) {
-                    cardClass = 'cancelled';
-                    statusMsg = `❌ CANCELADA - ${getDiaDaSemana(a.data)}`;
-                } else {
-                    if (a.data === hojeStr) {
-                        cardClass = 'today';
-                        statusMsg = '🔥 HOJE';
-                    } else if (a.data === amanhaStr) {
-                        cardClass = 'tomorrow';
-                        statusMsg = `${getDiaDaSemana(a.data)} - AMANHÃ! ⚡`;
-                    } else if (a.data < hojeStr) {
-                        cardClass = 'past';
-                        statusMsg = `✅ ${getDiaDaSemana(a.data)}`;
-                    } else {
-                        cardClass = 'next';
-                        statusMsg = `⏳ ${getDiaDaSemana(a.data)}`;
-                    }
-                }
-
-                html += `
-                <div class="card ${cardClass}" onclick="abrirModal('${a.data}', '${a.uc}', '${a.docente}', '${a.aula}')">
-                    <div class="status">${statusMsg}</div>
-                    <div class="date">${formatarDataBR(a.data)}</div>
-                    <div class="details"><span style="font-weight:bold;">${a.uc}</span><br>Prof: ${a.docente}</div>
-                </div>`;
-            });
-            document.getElementById('painel-aulas').innerHTML = html;
-        }
-
-        /* --- MÓDULO: CALCULADORA DE ESTÚDIO (HÍBRIDA) --- */
         const fStopsFull = ['f/1.0', 'f/1.4', 'f/2.0', 'f/2.8', 'f/4.0', 'f/5.6', 'f/8.0', 'f/11', 'f/16', 'f/22', 'f/32', 'f/45', 'f/64'];
+        const fStopsData = [ { f: '1.0', t1: '1.1', t2: '1.2', next: '1.4' }, { f: '1.4', t1: '1.6', t2: '1.8', next: '2.0' }, { f: '2.0', t1: '2.2', t2: '2.5', next: '2.8' }, { f: '2.8', t1: '3.2', t2: '3.5', next: '4.0' }, { f: '4.0', t1: '4.5', t2: '5.0', next: '5.6' }, { f: '5.6', t1: '6.3', t2: '7.1', next: '8.0' }, { f: '8.0', t1: '9.0', t2: '10', next: '11' }, { f: '11', t1: '13', t2: '14', next: '16' }, { f: '16', t1: '18', t2: '20', next: '22' }, { f: '22', t1: '25', t2: '29', next: '32' }, { f: '32', t1: '36', t2: '40', next: '45' }, { f: '45', t1: '51', t2: '57', next: '64' }, { f: '64', t1: '72', t2: '81', next: '90' } ];
         
-        const fStopsData = [
-            { f: '1.0', t1: '1.1', t2: '1.2', next: '1.4' },
-            { f: '1.4', t1: '1.6', t2: '1.8', next: '2.0' },
-            { f: '2.0', t1: '2.2', t2: '2.5', next: '2.8' },
-            { f: '2.8', t1: '3.2', t2: '3.5', next: '4.0' },
-            { f: '4.0', t1: '4.5', t2: '5.0', next: '5.6' },
-            { f: '5.6', t1: '6.3', t2: '7.1', next: '8.0' },
-            { f: '8.0', t1: '9.0', t2: '10', next: '11' },
-            { f: '11', t1: '13', t2: '14', next: '16' },
-            { f: '16', t1: '18', t2: '20', next: '22' },
-            { f: '22', t1: '25', t2: '29', next: '32' },
-            { f: '32', t1: '36', t2: '40', next: '45' },
-            { f: '45', t1: '51', t2: '57', next: '64' },
-            { f: '64', t1: '72', t2: '81', next: '90' }
-        ];
-
-        let lights = [];
-        let lightIdCounter = 0;
-
-        function getAbsoluteValue(stopIndex, tenths) { return (stopIndex * 10) + tenths; }
+        let lights = []; let lightIdCounter = 0; function getAbsoluteValue(stopIndex, tenths) { return (stopIndex * 10) + tenths; }
         
-        function addLight(role = 'Preenchimento', baseStop = 6, tenths = 0) {
-            if (lights.length >= 5) return alert("Máximo de 5 luzes.");
-            lights.push({ id: lightIdCounter++, role, baseStop, tenths });
-            renderLights();
+        function addLight(role = 'Preenchimento', baseStop = 6, tenths = 0) { 
+            if (lights.length >= 6) return alert("Máximo de 1 Luz Principal + 5 Secundárias atingido."); 
+            lights.push({ id: lightIdCounter++, role, baseStop, tenths }); renderLights(); 
         }
         
         function removeLight(id) { lights = lights.filter(l => l.id !== id); renderLights(); }
         
-        function updateLight(id, field, value) {
-            const light = lights.find(l => l.id === id);
-            if (light) {
-                light[field] = value;
-                if (field === 'role' && value === 'Principal') lights.forEach(l => { if (l.id !== id && l.role === 'Principal') l.role = 'Preenchimento'; });
-                renderLights();
-            }
+        function updateLight(id, field, value) { 
+            const light = lights.find(l => l.id === id); 
+            if (light) { 
+                light[field] = value; 
+                if (field === 'role' && value === 'Principal') lights.forEach(l => { if (l.id !== id && l.role === 'Principal') l.role = 'Preenchimento'; }); 
+                renderLights(); 
+            } 
         }
         
-        function nudgeLight(id, tenthsToAdd) {
-            const light = lights.find(l => l.id === id);
-            if (!light) return;
-            let newAbs = getAbsoluteValue(light.baseStop, light.tenths) + tenthsToAdd;
-            if (newAbs < 0) newAbs = 0;
-            if (newAbs > 120) newAbs = 120;
-            light.baseStop = Math.floor(newAbs / 10);
-            light.tenths = newAbs % 10;
-            renderLights();
+        function nudgeLight(id, tenthsToAdd) { 
+            const light = lights.find(l => l.id === id); if (!light) return; 
+            let newAbs = getAbsoluteValue(light.baseStop, light.tenths) + tenthsToAdd; 
+            if (newAbs < 0) newAbs = 0; if (newAbs > 120) newAbs = 120; 
+            light.baseStop = Math.floor(newAbs / 10); light.tenths = newAbs % 10; 
+            renderLights(); 
         }
-
-        function getCameraAdvice(stopIndex, tenths) {
-            const stopData = fStopsData[stopIndex];
-            let message = "";
-            let isWarning = false;
-
-            switch(tenths) {
-                case 0:
-                case 1:
-                    message = `📸 Câmera: Use <strong>f/${stopData.f}</strong> (Ponto inteiro)`;
-                    break;
-                case 2:
-                    message = `⚠️ MEXE NA LUZ! (-2/10 para <strong>f/${stopData.f}</strong> ou +1/10 para <strong>f/${stopData.t1}</strong>)`;
-                    isWarning = true;
-                    break;
-                case 3:
-                case 4:
-                    message = `📸 Câmera: Use <strong>f/${stopData.t1}</strong> (1º Terço)`;
-                    break;
-                case 5:
-                    message = `⚠️ MEXE NA LUZ! (Mude 1/2 ponto para <strong>f/${stopData.f}</strong> ou <strong>f/${stopData.next}</strong>)`;
-                    isWarning = true;
-                    break;
-                case 6:
-                case 7:
-                    message = `📸 Câmera: Use <strong>f/${stopData.t2}</strong> (2º Terço)`;
-                    break;
-                case 8:
-                    message = `⚠️ MEXE NA LUZ! (-1/10 para <strong>f/${stopData.t2}</strong> ou +2/10 para <strong>f/${stopData.next}</strong>)`;
-                    isWarning = true;
-                    break;
-                case 9:
-                    message = `📸 Câmera: Use <strong>f/${stopData.next}</strong> (Próximo Inteiro)`;
-                    break;
-            }
-            return { message, isWarning };
+        
+        function getCameraAdvice(stopIndex, tenths) { 
+            const stopData = fStopsData[stopIndex]; let message = ""; let isWarning = false; 
+            switch(tenths) { 
+                case 0: case 1: message = `📸 Câmera: Use <strong>f/${stopData.f}</strong> (Ponto inteiro)`; break; 
+                case 2: message = `⚠️ MEXE NA LUZ! (-2/10 para <strong>f/${stopData.f}</strong> ou +1/10 para <strong>f/${stopData.t1}</strong>)`; isWarning = true; break; 
+                case 3: case 4: message = `📸 Câmera: Use <strong>f/${stopData.t1}</strong> (1º Terço)`; break; 
+                case 5: message = `⚠️ MEXE NA LUZ! (Mude 1/2 ponto para <strong>f/${stopData.f}</strong> ou <strong>f/${stopData.next}</strong>)`; isWarning = true; break; 
+                case 6: case 7: message = `📸 Câmera: Use <strong>f/${stopData.t2}</strong> (2º Terço)`; break; 
+                case 8: message = `⚠️ MEXE NA LUZ! (-1/10 para <strong>f/${stopData.t2}</strong> ou +2/10 para <strong>f/${stopData.next}</strong>)`; isWarning = true; break; 
+                case 9: message = `📸 Câmera: Use <strong>f/${stopData.next}</strong> (Próximo Inteiro)`; break; 
+            } 
+            return { message, isWarning }; 
         }
-
-        function renderLights() {
-            const container = document.getElementById('lightsContainer');
-            if(!container) return;
-            container.innerHTML = '';
-            const principal = lights.find(l => l.role === 'Principal');
-
-            lights.forEach(light => {
-                const isPrincipal = light.role === 'Principal';
-                const row = document.createElement('div');
-                row.className = `light-row ${isPrincipal ? 'principal' : ''}`;
-
-                row.innerHTML = `
-                    <select onchange="updateLight(${light.id}, 'role', this.value)">
-                        <option ${light.role==='Principal'?'selected':''}>Principal</option>
-                        <option ${light.role==='Preenchimento'?'selected':''}>Preenchimento</option>
-                        <option ${light.role==='Recorte'?'selected':''}>Recorte</option>
-                        <option ${light.role==='Fundo'?'selected':''}>Fundo</option>
-                        <option ${light.role==='Cabelo'?'selected':''}>Cabelo</option>
-                    </select>
-                    <select onchange="updateLight(${light.id}, 'baseStop', parseInt(this.value))">
-                        ${fStopsFull.map((f, i) => `<option value="${i}" ${light.baseStop===i?'selected':''}>${f}</option>`).join('')}
-                    </select>
-                    <select onchange="updateLight(${light.id}, 'tenths', parseInt(this.value))">
-                        ${[0,1,2,3,4,5,6,7,8,9].map(t => `<option value="${t}" ${light.tenths===t?'selected':''}>${t}/10</option>`).join('')}
-                    </select>
-                    <div class="nudge-btns">
-                        <button onclick="nudgeLight(${light.id}, -5)">-1/2</button>
-                        <button onclick="nudgeLight(${light.id}, -1)">-1/10</button>
-                        <button onclick="nudgeLight(${light.id}, 1)">+1/10</button>
-                        <button onclick="nudgeLight(${light.id}, 5)">+1/2</button>
-                    </div>
-                    <button style="color:red; border:none; background:none; cursor:pointer; font-size:1.2rem; font-weight:bold;" onclick="removeLight(${light.id})">✖</button>
-                    <div class="result-text" id="res-${light.id}"></div>
-                `;
-                container.appendChild(row);
-
-                const resDiv = document.getElementById(`res-${light.id}`);
-                const advice = getCameraAdvice(light.baseStop, light.tenths);
-                const adviceStyle = advice.isWarning ? "color: var(--accent-warning); font-weight: bold;" : "color: #bbb;";
+        
+        function renderLights() { 
+            const container = document.getElementById('lightsContainer'); if(!container) return; 
+            container.innerHTML = ''; 
+            const cenario = document.getElementById('cenarioFundo') ? document.getElementById('cenarioFundo').value : 'livre'; 
+            const principal = lights.find(l => l.role === 'Principal'); 
+            
+            lights.forEach(light => { 
+                const isPrincipal = light.role === 'Principal'; 
+                const row = document.createElement('div'); row.className = `light-row ${isPrincipal ? 'principal' : ''}`; 
                 
-                let resultHTML = `<div style="${adviceStyle} margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed #444;">${advice.message}</div>`;
-
-                if (isPrincipal) {
-                    resultHTML += `<div style="color: #28a745;">⚓ Luz de Referência (Âncora para as demais)</div>`;
-                } else if (principal) {
-                    const diff = getAbsoluteValue(principal.baseStop, principal.tenths) - getAbsoluteValue(light.baseStop, light.tenths);
-                    if (diff === 0) { 
-                        resultHTML += `<div>✅ Luz igualada com a principal.</div>`; 
-                    } else {
-                        const dir = diff > 0 ? "Aumente" : "Reduza";
-                        resultHTML += `<div>⚙️ Na Tocha: <strong>${dir}</strong> luz em <strong>${Math.floor(Math.abs(diff) / 5)} clicks (1/2)</strong> e <strong>${Math.abs(diff) % 5} clicks (1/10)</strong>.</div>`;
-                    }
-                }
-                resDiv.innerHTML = resultHTML;
-            });
+                row.innerHTML = ` 
+                    <select onchange="updateLight(${light.id}, 'role', this.value)"> 
+                        <option ${light.role==='Principal'?'selected':''}>Principal</option> 
+                        <option ${light.role==='Preenchimento'?'selected':''}>Preenchimento</option> 
+                        <option ${light.role==='Recorte'?'selected':''}>Recorte</option> 
+                        <option ${light.role==='Cabelo'?'selected':''}>Cabelo</option> 
+                        <option ${light.role==='Fundo'?'selected':''}>Fundo</option> 
+                        <option ${light.role==='Retorno'?'selected':''}>Retorno</option> 
+                    </select> 
+                    <select onchange="updateLight(${light.id}, 'baseStop', parseInt(this.value))"> 
+                        ${fStopsFull.map((f, i) => `<option value="${i}" ${light.baseStop===i?'selected':''}>${f}</option>`).join('')} 
+                    </select> 
+                    <select onchange="updateLight(${light.id}, 'tenths', parseInt(this.value))"> 
+                        ${[0,1,2,3,4,5,6,7,8,9].map(t => `<option value="${t}" ${light.tenths===t?'selected':''}>${t}/10</option>`).join('')} 
+                    </select> 
+                    <div class="nudge-btns"> 
+                        <button onclick="nudgeLight(${light.id}, -5)">-1/2</button> 
+                        <button onclick="nudgeLight(${light.id}, -1)">-1/10</button> 
+                        <button onclick="nudgeLight(${light.id}, 1)">+1/10</button> 
+                        <button onclick="nudgeLight(${light.id}, 5)">+1/2</button> 
+                    </div> 
+                    <button style="color:red; border:none; background:none; cursor:pointer; font-size:1.2rem; font-weight:bold;" onclick="removeLight(${light.id})">✖</button> 
+                    <div class="result-text" id="res-${light.id}"></div> 
+                `; 
+                container.appendChild(row); 
+                
+                const resDiv = document.getElementById(`res-${light.id}`); 
+                let resultHTML = ""; 
+                
+                if (isPrincipal) { 
+                    const advice = getCameraAdvice(light.baseStop, light.tenths); 
+                    const adviceStyle = advice.isWarning ? "color: var(--accent-warning); font-weight: bold;" : "color: #bbb;"; 
+                    resultHTML += `<div style="${adviceStyle} margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed #444;">${advice.message}</div>`; 
+                    resultHTML += `<div style="color: #28a745; font-weight: bold;">⚓ Luz de Referência (Âncora da cena)</div>`; 
+                } 
+                else if (principal) { 
+                    const pAbs = getAbsoluteValue(principal.baseStop, principal.tenths); 
+                    const lAbs = getAbsoluteValue(light.baseStop, light.tenths); 
+                    const diffFromMain = lAbs - pAbs; 
+                    
+                    let isAtTarget = false; let targetMsg = ""; let splitAdvice = ""; 
+                    
+                    if (light.role === 'Preenchimento') { 
+                        if (diffFromMain === -20) isAtTarget = true; targetMsg = "2 stops abaixo da principal"; 
+                    } else if (light.role === 'Recorte' || light.role === 'Cabelo') { 
+                        if (diffFromMain === 20) isAtTarget = true; targetMsg = "2 stops acima da principal"; 
+                    } else if (cenario === 'branco') { 
+                        if (light.role === 'Fundo') { 
+                            if (diffFromMain >= 10 && diffFromMain <= 20) isAtTarget = true; targetMsg = "1 a 2 stops acima da principal (+1.5 ideal)"; 
+                        } else if (light.role === 'Retorno') { 
+                            if (diffFromMain <= 0) isAtTarget = true; targetMsg = "Máximo igual à principal"; 
+                            if (diffFromMain > 0) { 
+                                splitAdvice = `<div style="color: var(--accent-warning); margin-top: 8px;">⚠️ <strong>Vazamento de Retorno!</strong><br>Reduza <strong>${(diffFromMain / 2).toFixed(1)}/10</strong> em cada flash do fundo para compensar.</div>`; 
+                            } 
+                        } 
+                    } else if (cenario === 'cinza') { 
+                        if (light.role === 'Fundo') { 
+                            if (diffFromMain >= -40 && diffFromMain <= -20) isAtTarget = true; targetMsg = "2 a 4 stops abaixo da principal"; 
+                        } 
+                    } 
+                    
+                    if (isAtTarget) { 
+                        resultHTML += `<div class="success-box">✅ Intenção Atingida:<br><span style="font-weight: normal; color: #ccc;">${targetMsg}</span></div>`; 
+                    } else { 
+                        if (diffFromMain === 0 && targetMsg !== "") { 
+                            resultHTML += `<div style="color: #64b5f6; margin-bottom: 8px;">✅ Luz igualada. <br><strong>Passo 2:</strong> Ajuste para a regra de intenção: <span style="color:#fff;">[ ${targetMsg} ]</span></div>`; 
+                        } else { 
+                            const diffToEqualize = pAbs - lAbs; 
+                            const dir = diffToEqualize > 0 ? "Aumente" : "Reduza"; 
+                            resultHTML += `<div style="margin-bottom: 8px;">⚙️ <strong>Passo 1 (Igualar):</strong> <br>Na tocha, ${dir} <strong>${Math.floor(Math.abs(diffToEqualize) / 5)} clicks (1/2)</strong> e <strong>${Math.abs(diffToEqualize) % 5} clicks (1/10)</strong>.</div>`; 
+                            if (targetMsg) { resultHTML += `<div style="color: #aaa; font-size: 0.9em;">🎯 Regra da Intenção final: ${targetMsg}</div>`; } 
+                        } 
+                        if (splitAdvice) resultHTML += splitAdvice; 
+                    } 
+                } 
+                resDiv.innerHTML = resultHTML; 
+            }); 
         }
     </script>
 </body>
