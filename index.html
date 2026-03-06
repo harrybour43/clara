@@ -29,7 +29,7 @@
             --accent-calc: #0056b3;
             --accent-aulas: #4caf50;
             --accent-eventos: #9c27b0;
-            --accent-datas: #00bcd4; /* Ciano para as Datas de Interesse */
+            --accent-datas: #00bcd4; 
             --accent-sun: #ffb300;
             --accent-dicio: #e91e63;
             --accent-warning: #ff9800; 
@@ -69,7 +69,7 @@
             margin: 0 auto; 
             min-height: 100vh; 
             box-sizing: border-box; 
-            padding-bottom: 100px; /* Espaço para o rodapé */
+            padding-bottom: 100px; 
         }
         
         h1.page-title { 
@@ -96,7 +96,7 @@
         .disclaimer-box strong { color: var(--accent-warning); }
 
         /* ==========================================
-           2. SPLASH SCREEN E MENU (BRANDING C.L.A.R.A.)
+           2. SPLASH SCREEN E MENU 
            ========================================== */
         #splash-screen { 
             position: fixed; 
@@ -127,7 +127,6 @@
 
         #main-menu { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; gap: 15px; padding: 20px; position: relative; }
         
-        /* Botão de Sync Forçado no Menu */
         .btn-sync {
             position: absolute;
             top: 20px;
@@ -162,11 +161,14 @@
         .menu-btn.btn-sun { border-left-color: var(--accent-sun); }
         .menu-btn.btn-calc { border-left-color: var(--accent-calc); }
         .menu-btn.btn-dicio { border-left-color: var(--accent-dicio); }
+        
+        /* Cor especial para o menu agrupado da turma */
+        .menu-btn.btn-turma { border-left-color: var(--accent-snc); }
 
         .clara-footer { text-align: center; padding: 20px 0; margin-top: 20px; color: #555; font-size: 0.75rem; letter-spacing: 2px; width: 100%; text-transform: uppercase; font-weight: bold; border-top: 1px solid #222;}
 
         /* ==========================================
-           3. TELA DE AUTENTICAÇÃO (Área Restrita)
+           3. TELA DE AUTENTICAÇÃO E SUB-MENU
            ========================================== */
         .auth-container {
             display: flex;
@@ -247,7 +249,7 @@
         .modal-header { border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 15px; }
         
         .evento-card { background-color: var(--bg-panel); border-left: 5px solid var(--accent-eventos); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-        .evento-card.datas-int { border-left-color: var(--accent-datas); } /* Estilo extra para Datas de Interesse */
+        .evento-card.datas-int { border-left-color: var(--accent-datas); }
         .evento-card.past { border-left-color: #555; background-color: #161616; opacity: 0.6; }
         .evento-card.past .evento-titulo, .evento-card.past .evento-desc, .evento-card.past .evento-data span, .evento-card.past .evento-countdown { color: #777 !important; }
         .evento-data { color: var(--accent-eventos); font-weight: bold; font-size: 1em; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
@@ -256,8 +258,6 @@
         .evento-countdown.urgente { color: var(--accent-warning); font-weight: bold; opacity: 1; }
         .evento-countdown.hoje { color: #ff4081; font-weight: bold; opacity: 1; }
         .evento-titulo { font-size: 1.2em; color: #fff; margin-bottom: 5px; }
-        
-        /* A REGRA PRE-WRAP AQUI GARANTE QUE O ALT+ENTER DO GOOGLE SHEETS FUNCIONE */
         .evento-desc { color: #ccc; font-size: 0.95em; line-height: 1.4; white-space: pre-wrap; }
 
         /* ==========================================
@@ -267,6 +267,7 @@
         .sun-card.golden { border-left-color: var(--accent-sun); background-color: rgba(255, 179, 0, 0.1); }
         .sun-card.blue { border-left-color: #2196f3; background-color: rgba(33, 150, 243, 0.1); }
         .sun-card.weather-card { border-left-color: #00bcd4; background-color: rgba(0, 188, 212, 0.1); }
+        .sun-card.moon-card { border-left-color: #bbb; background-color: rgba(200, 200, 200, 0.05); }
         .sun-card .time { font-size: 1.2em; font-weight: bold; color: #fff; }
         .sun-card .label { color: #ccc; font-size: 0.9em; }
         
@@ -320,7 +321,7 @@
         
         <div id="loading-text" style="color: var(--accent-snc); font-weight: bold; margin-top: 30px;">A carregar base de dados...</div>
         <div class="click-hint-splash hidden" id="click-hint">Toque em qualquer lugar para entrar</div>
-        <div class="splash-footer">Versão 6.0 | Desenvolvido por Harry Bour</div>
+        <div class="splash-footer">Versão 6.1 | Desenvolvido por Harry Bour</div>
     </div>
 
     <div id="view-menu" class="view hidden">
@@ -335,8 +336,7 @@
                 <div class="menu-turma-badge">Central de Luz e Apoio ao Repertório de Autores</div>
             </div>
             
-            <button class="menu-btn btn-aulas" onclick="requireAuth('view-aulas')"><span class="menu-icon">📅</span> Crono de Aulas SCI-TPF43M</button>
-            <button class="menu-btn btn-eventos" onclick="requireAuth('view-eventos')"><span class="menu-icon">📷</span> Eventos da Turma SCI-TPF43M</button>
+            <button class="menu-btn btn-turma" onclick="requireAuth('view-turma-menu')"><span class="menu-icon">🔒</span> Área da Turma SCI-TPF43M</button>
             
             <button class="menu-btn btn-datas" onclick="switchView('view-datas')"><span class="menu-icon">🌍</span> Datas de Interesse</button>
             
@@ -344,7 +344,7 @@
             <button class="menu-btn btn-sun" onclick="switchView('view-suncalc'); initSunCalc();"><span class="menu-icon">☀️</span> Unidade de Inteligência Solar</button>
             <button class="menu-btn btn-calc" onclick="switchView('view-calc')"><span class="menu-icon">🧮</span> Mapa de Luz</button>
             
-            <div class="clara-footer">C.L.A.R.A. v6.0 | Desenvolvido por Harry Bour</div>
+            <div class="clara-footer">C.L.A.R.A. v6.1 | Desenvolvido por Harry Bour</div>
         </div>
     </div>
 
@@ -365,8 +365,20 @@
         <div class="clara-footer" style="position: absolute; bottom: 0;">C.L.A.R.A. SECURITY</div>
     </div>
 
-    <div id="view-aulas" class="view page-container hidden">
+    <div id="view-turma-menu" class="view page-container hidden">
         <button class="btn-voltar" onclick="switchView('view-menu')">⬅ Menu Principal</button>
+        <h1 class="page-title" style="border-bottom-color: var(--accent-snc);">Área da Turma SCI-TPF43M</h1>
+        
+        <div style="display:flex; flex-direction:column; gap: 15px; margin-top: 30px; align-items:center;">
+            <button class="menu-btn btn-aulas" onclick="switchView('view-aulas')"><span class="menu-icon">📅</span> Crono de Aulas</button>
+            <button class="menu-btn btn-eventos" onclick="switchView('view-eventos')"><span class="menu-icon">📷</span> Eventos da Turma</button>
+        </div>
+        
+        <div class="clara-footer" style="position: absolute; bottom: 0;">C.L.A.R.A. HUB</div>
+    </div>
+
+    <div id="view-aulas" class="view page-container hidden">
+        <button class="btn-voltar" onclick="switchView('view-turma-menu')">⬅ Área da Turma</button>
         <h1 class="page-title" style="border-bottom-color: var(--accent-aulas);">Crono de Aulas</h1>
         
         <div class="disclaimer-box">
@@ -405,7 +417,7 @@
     </div>
 
     <div id="view-eventos" class="view page-container hidden">
-        <button class="btn-voltar" onclick="switchView('view-menu')">⬅ Menu Principal</button>
+        <button class="btn-voltar" onclick="switchView('view-turma-menu')">⬅ Área da Turma</button>
         <h1 class="page-title" style="border-bottom-color: var(--accent-eventos);">Eventos da Turma</h1>
         
         <div class="disclaimer-box">
@@ -421,7 +433,7 @@
         <h1 class="page-title" style="border-bottom-color: var(--accent-datas);">Datas de Interesse</h1>
         
         <div class="disclaimer-box" style="border-left-color: var(--accent-datas);">
-            <strong>🌍 Fique de olho:</strong> Exposições, editais, feiras e prazos externos relevantes para a área da fotografia e afins.
+            <strong>🌍 Fique de olho:</strong> Exposições, editais, feiras e prazos externos relevantes para a área fotográfica.
         </div>
         
         <div id="lista-datas">
@@ -476,6 +488,7 @@
         <button class="btn-gps" id="btn-gps" onclick="getMyLocation()">📍 Usar a minha localização atual</button>
         
         <div id="weather-results" class="sun-card weather-card hidden"></div>
+        <div id="moon-results"></div>
 
         <div id="suncalc-results"></div>
         <div class="clara-footer">C.L.A.R.A. GEOMETRIA DA LUZ</div>
@@ -506,13 +519,11 @@
         const LINK_PLANILHA_AULAS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqOEEEZGFugY9MN7_0OsVjxvl02CxltDPfTx3LbUtte0mY7nLHWJxmu-ISbymcrS7cbyK__ixm43fI/pub?gid=0&single=true&output=tsv";
         const LINK_PLANILHA_EVENTOS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqOEEEZGFugY9MN7_0OsVjxvl02CxltDPfTx3LbUtte0mY7nLHWJxmu-ISbymcrS7cbyK__ixm43fI/pub?gid=1213067383&single=true&output=tsv";
         const LINK_PLANILHA_DICIO = "COLE_AQUI_O_LINK_TSV_DA_ABA_ENCICLOPEDIA"; 
-        
-        // NOVO LINK PARA DATAS DE INTERESSE
         const LINK_PLANILHA_DATAS = "COLE_AQUI_O_LINK_TSV_DATAS_DE_INTERESSE"; 
         
         let aulasArray = []; 
         let baseEventos = []; 
-        let baseDatas = []; // Array do novo módulo
+        let baseDatas = []; 
         let dicioArray = [];
         let dadosCarregados = false;
         
@@ -591,7 +602,6 @@
             window.scrollTo(0,0); 
         }
 
-        // Lógica de Autenticação (Senha da Turma)
         function requireAuth(viewId) {
             if (localStorage.getItem('auth_tpf43m') === 'true') {
                 switchView(viewId);
@@ -615,7 +625,6 @@
             }
         }
 
-        // Permite apertar Enter para logar
         document.getElementById('input-senha').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') validarSenha();
         });
@@ -627,25 +636,22 @@
             const btn = document.getElementById('btn-force-sync');
             btn.classList.add('spinning');
             
-            // Limpa o cache local
             localStorage.removeItem('tpf43m_aulas');
             localStorage.removeItem('tpf43m_eventos');
             localStorage.removeItem('tpf43m_datas');
             localStorage.removeItem('tpf43m_dicio');
             
-            // Variável mágica na URL para forçar o Google a dar o arquivo fresco
             const noCacheUrl = `&nocache=${new Date().getTime()}`;
             
             carregarBancoDeDados(noCacheUrl).then(() => {
                 setTimeout(() => {
                     btn.classList.remove('spinning');
-                }, 1000); // Mantém girando 1s para o usuário ver
+                }, 1000); 
             });
         }
 
         // ==========================================
-        // NOVO PARSER TSV (O "Tradutor Inteligente")
-        // Resolve quebras de linha com Alt+Enter do Google Sheets
+        // NOVO PARSER TSV (Alt+Enter do Google Sheets)
         // ==========================================
         function tratarTSV(tsv) {
             let linhas = [];
@@ -657,8 +663,7 @@
                 let char = tsv[i];
                 if (char === '"') {
                     if (dentroDeAspas && tsv[i + 1] === '"') {
-                        celulaAtual += '"';
-                        i++; // Pula as aspas de escape
+                        celulaAtual += '"'; i++; 
                     } else {
                         dentroDeAspas = !dentroDeAspas;
                     }
@@ -666,7 +671,7 @@
                     linhaAtual.push(celulaAtual);
                     celulaAtual = "";
                 } else if (char === '\n' && !dentroDeAspas) {
-                    linhaAtual.push(celulaAtual.replace(/\r$/, '')); // Limpa carriage return
+                    linhaAtual.push(celulaAtual.replace(/\r$/, '')); 
                     linhas.push(linhaAtual);
                     linhaAtual = [];
                     celulaAtual = "";
@@ -674,8 +679,6 @@
                     celulaAtual += char;
                 }
             }
-            
-            // Adiciona o que sobrou
             if (celulaAtual || linhaAtual.length > 0) {
                 linhaAtual.push(celulaAtual.replace(/\r$/, ''));
                 linhas.push(linhaAtual);
@@ -692,7 +695,6 @@
             const cacheDatas = localStorage.getItem('tpf43m_datas');
             const cacheDicio = localStorage.getItem('tpf43m_dicio');
             
-            // Se for chamada normal (sem nocache) e tiver cache, usa ele
             if (noCacheStr === "" && cacheAulas && cacheEventos) { 
                 processarAulas(cacheAulas); 
                 processarEventos(cacheEventos); 
@@ -702,7 +704,6 @@
             }
 
             try {
-                // Fetch das bases principais
                 const resAulas = await fetch(LINK_PLANILHA_AULAS + noCacheStr);
                 const tsvAulas = await resAulas.text();
                 
@@ -716,7 +717,6 @@
                     processarEventos(tsvEventos); 
                 }
 
-                // Fetch Datas de Interesse
                 if (LINK_PLANILHA_DATAS.startsWith("http")) {
                     const resDatas = await fetch(LINK_PLANILHA_DATAS + noCacheStr);
                     if (resDatas.ok) {
@@ -728,7 +728,6 @@
                     }
                 }
 
-                // Fetch Dicionário
                 if (LINK_PLANILHA_DICIO.startsWith("http")) {
                     const resDicio = await fetch(LINK_PLANILHA_DICIO + noCacheStr);
                     if (resDicio.ok) {
@@ -740,18 +739,16 @@
                     }
                 }
             } catch (error) { 
-                console.error("Modo Offline Ativado devido a erro na conexão:", error); 
+                console.error("Modo Offline Ativado", error); 
                 if (!dadosCarregados) {
                     document.getElementById('loading-text').innerText = "Modo Offline Ativado."; 
                 }
             } finally { 
-                if (!dadosCarregados) {
-                    liberarAcesso(); 
-                }
+                if (!dadosCarregados) { liberarAcesso(); }
             }
         }
 
-        // Funções de Processamento usando tratarTSV()
+        // Funções de Processamento TSV
         function processarAulas(tsv) { 
             const linhas = tratarTSV(tsv).slice(1); 
             aulasArray = []; 
@@ -794,7 +791,7 @@
                     }); 
                 }
             }); 
-            if (baseDatas.length > 0) initDatas(); // Renderiza sempre que processar
+            if (baseDatas.length > 0) initDatas(); 
         }
 
         function processarDicio(tsv) {
@@ -854,7 +851,6 @@
             const cont = document.getElementById('dicio-alpha-area');
             const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
             let html = '';
-            
             letters.forEach(l => {
                 const activeClass = (l === currentLetter) ? 'active' : '';
                 html += `<div class="dicio-letter ${activeClass}" onclick="selectLetter('${l}')">${l}</div>`;
@@ -937,13 +933,19 @@
         }
 
         // ==========================================
-        // MÓDULO DE EVENTOS DA TURMA
+        // MÓDULO DE EVENTOS DA TURMA (Com suporte a multi-eventos no mesmo dia)
         // ==========================================
         function initEventos() { 
             const container = document.getElementById('lista-eventos'); 
             let html = ''; 
             
-            baseEventos.sort((a, b) => new Date(a.data) - new Date(b.data)); 
+            // Ordena os eventos por Data. Se a data for igual, ordena por Título.
+            baseEventos.sort((a, b) => {
+                const dateA = new Date(a.data).getTime();
+                const dateB = new Date(b.data).getTime();
+                if(dateA === dateB) return a.titulo.localeCompare(b.titulo);
+                return dateA - dateB;
+            });
             
             const hojeDate = new Date(); 
             const hojeY = hojeDate.getFullYear(); 
@@ -993,13 +995,19 @@
         }
 
         // ==========================================
-        // MÓDULO DE DATAS DE INTERESSE (Público e Histórico)
+        // MÓDULO DE DATAS DE INTERESSE (Com suporte a multi-eventos no mesmo dia)
         // ==========================================
         function initDatas() { 
             const container = document.getElementById('lista-datas'); 
             let html = ''; 
             
-            baseDatas.sort((a, b) => new Date(a.data) - new Date(b.data)); 
+            // Ordena os eventos por Data. Se a data for igual, ordena por Título.
+            baseDatas.sort((a, b) => {
+                const dateA = new Date(a.data).getTime();
+                const dateB = new Date(b.data).getTime();
+                if(dateA === dateB) return a.titulo.localeCompare(b.titulo);
+                return dateA - dateB;
+            });
             
             const hojeDate = new Date(); 
             const hojeY = hojeDate.getFullYear(); 
@@ -1022,8 +1030,6 @@
                 
                 const diffTime = dataEvento.getTime() - dataHojeLocal.getTime();
                 const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24)); 
-                
-                // Sem trava de dias passados para manter o histórico
                 
                 let countdownHTML = ""; 
                 let extraClass = "datas-int"; 
@@ -1170,7 +1176,7 @@
         }
 
         // ==========================================
-        // MÓDULO DE LUZ NATURAL (SUNCALC + OPEN-METEO)
+        // MÓDULO DE LUZ NATURAL E LUA (SUNCALC + OPEN-METEO)
         // ==========================================
         let locLat = -23.5266; 
         let locLng = -46.6963;
@@ -1212,6 +1218,66 @@
             `;
         }
         
+        function getMoonInfo(targetDate) {
+            const moonIllum = SunCalc.getMoonIllumination(targetDate);
+            const phase = moonIllum.phase; 
+            const fraction = moonIllum.fraction; 
+            const distance = moonIllum.distance; 
+            
+            let phaseName = "";
+            let emoji = "";
+            let witticism = "";
+
+            if (phase < 0.03 || phase > 0.97) { 
+                phaseName = "Lua Nova"; emoji = "🌑"; 
+                witticism = "Hoje à noite não tem luar. Você está com ela? (Zero luz = paraíso das astrofotografias)."; 
+            } else if (phase < 0.25) { 
+                phaseName = "Crescente"; emoji = "🌒"; 
+                witticism = "A lua está crescendo, igual à sua vontade de comprar equipamento. Rende fotos com luz suave noturna."; 
+            } else if (phase < 0.28) { 
+                phaseName = "Quarto Crescente"; emoji = "🌓"; 
+                witticism = "Metade iluminada, metade misteriosa. Luz lateral dramática, ótima para texturas e crateras."; 
+            } else if (phase < 0.47) { 
+                phaseName = "Gibosa Crescente"; emoji = "🌔"; 
+                witticism = "Quase cheia! A luz noturna já começa a ofuscar suas fotos de Via Láctea."; 
+            } else if (phase < 0.53) { 
+                phaseName = "Cheia"; emoji = "🌕"; 
+                witticism = "Lobisomens à solta! Luz dura noturna. A lua virou um rebatedor gigante lá no céu."; 
+            } else if (phase < 0.72) { 
+                phaseName = "Gibosa Minguante"; emoji = "🌖"; 
+                witticism = "A lua está de dieta. Ainda tem luz suficiente para iluminar paisagens terrestres longas."; 
+            } else if (phase < 0.78) { 
+                phaseName = "Quarto Minguante"; emoji = "🌗"; 
+                witticism = "Fim de festa. Fase ideal para captar o nascer da lua silencioso de madrugada."; 
+            } else { 
+                phaseName = "Minguante"; emoji = "🌘"; 
+                witticism = "Quase sumindo no horizonte. O céu noturno volta a ficar profundo e incrivelmente escuro."; 
+            }
+
+            let supermoonTag = "";
+            // Perigeu é aprox < 365,000 km.
+            if (distance < 365000 && (phase > 0.45 && phase < 0.55)) {
+                supermoonTag = "<br><br>🌕 <strong>SUPER LUA:</strong> A lua está no perigeu (mais próxima da Terra). Prepare a teleobjetiva!";
+            } else if (distance > 400000 && (phase > 0.45 && phase < 0.55)) {
+                supermoonTag = "<br><br>🌑 <strong>Minilua (Micro Lua):</strong> A lua está no apogeu (mais distante).";
+            }
+            
+            let eclipseText = (phase < 0.03 || phase > 0.97 || (phase > 0.47 && phase < 0.53)) 
+                ? " (Em fases extremas, há risco de eclipses lunares ou solares, confira seu calendário astronômico!)." : "";
+
+            return `
+                <div class="sun-card moon-card" style="flex-direction: column; align-items: flex-start;">
+                    <div style="display: flex; justify-content: space-between; width: 100%;">
+                        <span class="label">Fase da Lua (${Math.round(fraction * 100)}% visível)</span>
+                        <span class="time">${emoji} ${phaseName}</span>
+                    </div>
+                    <div style="font-size: 0.85em; color: #aaa; margin-top: 8px; line-height: 1.4; border-top: 1px dashed #444; padding-top: 8px; width: 100%;">
+                        🔭 <strong>Comentário C.L.A.R.A:</strong> ${witticism} ${eclipseText} ${supermoonTag}
+                    </div>
+                </div>
+            `;
+        }
+
         async function fetchWeather(lat, lng) {
             try {
                 const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true`);
@@ -1312,6 +1378,11 @@
                 </div>
             `; 
             document.getElementById('suncalc-results').innerHTML = html; 
+            
+            // Adiciona o Card da Lua
+            document.getElementById('moon-results').innerHTML = getMoonInfo(targetDate);
+            
+            // Adiciona o Clima (Apenas para HOJE)
             updateWeatherUI(targetDate);
         }
         
