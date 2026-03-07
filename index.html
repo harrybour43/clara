@@ -834,21 +834,27 @@
                     
                     const dtFim = (colunas.length > 1 && colunas[1].trim() !== '') ? processarDataInteligente(colunas[1].trim()) : dtInic;
                     
-                    const categoria = colunas.length > 2 && colunas[2].trim() !== '' ? colunas[2].trim() : 'Evento';
+                    const categoriaRaw = colunas.length > 2 && colunas[2].trim() !== '' ? colunas[2].trim() : 'Evento';
+                    
+                    // NOVO: Separa as categorias por ";" e limpa os espaços
+                    const categoriasArray = categoriaRaw.split(';').map(cat => {
+                        const nome = cat.trim();
+                        return { nome: nome, classe: getCategoriaClasse(nome) };
+                    });
+
                     const titulo = colunas.length > 3 ? colunas[3].trim() : 'Sem Título';
                     const local = colunas.length > 4 ? colunas[4].trim() : '';
                     const desc = colunas.length > 5 ? colunas[5].trim() : '';
                     let link = colunas.length > 6 ? colunas[6].trim() : '';
                     if (link && !link.startsWith('http')) link = 'https://' + link;
 
-                    // Extração de UF (Busca o padrão " - SP", " - RJ" no fim da string local)
                     let uf = "";
                     if (local) {
                         const ufMatch = local.match(/-\s*([a-zA-Z]{2})$/);
                         if (ufMatch) uf = ufMatch[1].toUpperCase();
                     }
 
-                    baseDatas.push({ dtInic, dtFim, categoria, titulo, local, desc, link, uf, classe: getCategoriaClasse(categoria) }); 
+                    baseDatas.push({ dtInic, dtFim, categorias: categoriasArray, titulo, local, desc, link, uf }); 
                 }
             }); 
             
@@ -870,7 +876,8 @@
             let setCat = new Set();
             let setUF = new Set();
             baseDatas.forEach(d => {
-                setCat.add(d.categoria);
+                // NOVO: Adiciona cada categoria individualmente aos botões de filtro
+                d.categorias.forEach(catObj => setCat.add(catObj.nome));
                 if(d.uf) setUF.add(d.uf);
             });
 
@@ -921,8 +928,10 @@
             let datasExibidas = 0; 
             
             baseDatas.forEach(ev => { 
-                // Filtro Cruzado "E"
-                if (filtrosCatAtivos.size > 0 && !filtrosCatAtivos.has(ev.categoria)) return;
+                // NOVO: Verifica se pelo menos UMA das tags do evento está marcada no filtro
+                const temCategoriaAtiva = filtrosCatAtivos.size === 0 || ev.categorias.some(cat => filtrosCatAtivos.has(cat.nome));
+                if (!temCategoriaAtiva) return;
+                
                 if (filtrosUFAtivos.size > 0 && (!ev.uf || !filtrosUFAtivos.has(ev.uf))) return;
 
                 let periodoHTML = "";
@@ -932,9 +941,18 @@
                     periodoHTML = `${ev.dtInic.dia.toString().padStart(2,'0')}/${ev.dtInic.mes.toString().padStart(2,'0')}/${ev.dtInic.ano}`;
                 }
 
+                // NOVO: Desenha múltiplas etiquetas lado a lado
+                let tagsHTML = "";
+                ev.categorias.forEach(cat => {
+                    tagsHTML += `<span class="ev-tipo ${cat.classe}">${cat.nome}</span> `;
+                });
+                
+                // Define a cor da borda lateral do card baseada na primeira categoria da lista
+                const classeBordaPrincipal = ev.categorias.length > 0 ? ev.categorias[0].classe : 'cat-default';
+
                 html += `
-                    <div class="evento-card datas-int ${ev.classe}">
-                        <span class="ev-tipo ${ev.classe}">${ev.categoria}</span>
+                    <div class="evento-card datas-int ${classeBordaPrincipal}">
+                        <div style="margin-bottom: 5px;">${tagsHTML}</div>
                         <div class="ev-titulo">${ev.titulo}</div>
                         <div class="ev-periodo">📅 ${periodoHTML}</div>
                         ${ev.local ? `<div class="ev-local">📍 ${ev.local}</div>` : ''}
