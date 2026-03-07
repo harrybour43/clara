@@ -47,6 +47,15 @@
 
         .hidden { display: none !important; }
         
+        /* INDICADOR DE STATUS */
+        #status-bar {
+            position: fixed; top: 0; width: 100%; height: 4px; z-index: 10001; transition: background 0.5s;
+        }
+        .status-online { background: #4caf50; }
+        .status-syncing { background: #2196f3; }
+        .status-cache { background: var(--accent-warning); }
+        .status-offline { background: #f44336; }
+        
         .btn-voltar { 
             background-color: transparent; 
             color: var(--text-main); 
@@ -202,6 +211,7 @@
             margin-right: 8px;
         }
         .status-online .status-dot { background-color: #4caf50; box-shadow: 0 0 6px #4caf50; }
+        .status-syncing .status-dot { background-color: #2196f3; box-shadow: 0 0 6px #2196f3; }
         .status-cache .status-dot { background-color: var(--accent-warning); box-shadow: 0 0 6px var(--accent-warning); }
         .status-offline .status-dot { background-color: #f44336; box-shadow: 0 0 6px #f44336; }
 
@@ -247,7 +257,6 @@
         /* ==========================================
            5. EVENTOS E AGENDA V4
            ========================================== */
-        /* Estilos base para aulas e turma */
         .evento-card { background-color: var(--bg-panel); border-left: 5px solid var(--accent-eventos); padding: 18px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);}
         .evento-card.past { opacity: 0.5; border-left-color: #555; }
         .evento-data { color: var(--accent-eventos); font-weight: bold; display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;}
@@ -327,7 +336,7 @@
         <div id="loading-text" style="color: var(--accent-snc); font-weight: bold; margin-top: 30px;">Iniciando sistema local...</div>
         <button id="btn-entrar" class="btn-entrar hidden" onclick="dismissSplash()">ENTRAR NA CLARA</button>
 
-        <div class="splash-footer">Versão 4.0.0 | Desenvolvido por Harry Bour</div>
+        <div class="splash-footer">Versão 4.0.2 | Desenvolvido por Harry Bour</div>
     </div>
 
     <div id="view-menu" class="view hidden">
@@ -348,7 +357,7 @@
             <button class="menu-btn btn-sun" onclick="switchView('view-suncalc'); initSunCalc();"><span class="menu-icon">☀️</span>Luz Natural</button>
             <button class="menu-btn btn-calc" onclick="switchView('view-calc')"><span class="menu-icon">🧮</span>Mapa de Luz</button>
             
-            <div class="clara-footer">CLARA v4.0.0 | Harry Bour</div>
+            <div class="clara-footer">CLARA v4.0.2 | Harry Bour</div>
         </div>
     </div>
 
@@ -414,6 +423,10 @@
         <button class="btn-voltar" onclick="switchView('view-menu')">⬅ Menu Principal</button>
         <h1 class="page-title" style="border-bottom-color: var(--accent-datas);">Datas de Interesse</h1>
         
+        <div class="disclaimer-box" style="border-left-color: var(--accent-datas);">
+            <strong>Fique de olho:</strong> Exposições, editais, feiras e prazos externos relevantes para a área fotográfica.
+        </div>
+        
         <button class="btn-contribuir" onclick="switchView('view-contribuir')">
             <span>➕</span> Está faltando alguma informação? Contribua com a CLARA!
         </button>
@@ -429,7 +442,7 @@
             <strong>⚠️ Atenção:</strong> Você está offline. Conecte-se à internet para preencher o formulário.
         </div>
         <div class="form-wrapper">
-            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeJIJG-CJE4uulWWJPDnExFqLrt1fl-5FAxh2DWfcizv2bb8A/viewform?embedded=true" width="100%" height="100%" frameborder="0">Carregando...</iframe>
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeJIJG-CJE4uulWWJPDnExFqLrt1fl-5FAxh2DWfcizv2bb8A/viewform?embedded=true" width="100%" height="100%" frameborder="0">Carregando formulário...</iframe>
         </div>
     </div>
 
@@ -542,10 +555,10 @@
         };
 
         // ==========================================
-        // INICIALIZAÇÃO V4.0.0 (OFFLINE FIRST)
+        // INICIALIZAÇÃO V4.0.2 (OFFLINE FIRST COM PARALELISMO)
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
-            const currentVersion = "4.0.0";
+            const currentVersion = "4.0.2";
             if (localStorage.getItem('clara_version') !== currentVersion) {
                 // Remove caches de dados APENAS (preserva auth_tpf43m para não bloquear o aluno)
                 localStorage.removeItem('tpf43m_aulas');
@@ -580,13 +593,13 @@
                 if (cacheDicio) processarDicio(cacheDicio);
                 
                 liberarEntrada("Cache local carregado. Atualizando em segundo plano...");
-                updateConnectionStatus('cache');
+                updateConnectionStatus('syncing');
             } else {
                 document.getElementById('loading-text').innerText = "Primeiro acesso. Baixando arquivos da nuvem...";
-                updateConnectionStatus('offline');
+                updateConnectionStatus('syncing');
             }
 
-            // 3. Sincronização em Background (Compartimentalizada)
+            // 3. Sincronização em Background (Paralela e Blindada)
             const isConnected = await fetchGoogleSheets();
             if (isConnected) {
                 if (!hasCache) liberarEntrada("Bancos de dados atualizados!");
@@ -617,9 +630,12 @@
             if (status === 'online') {
                 bar.classList.add('status-online'); container.classList.add('status-online');
                 text.innerText = "🟢 DADOS ATUALIZADOS AGORA";
+            } else if (status === 'syncing') {
+                bar.classList.add('status-syncing'); container.classList.add('status-syncing');
+                text.innerText = "🔄 SINCRONIZANDO DADOS...";
             } else if (status === 'cache') {
                 bar.classList.add('status-cache'); container.classList.add('status-cache');
-                text.innerText = "🟡 VERSÃO OFFLINE (CACHE LOCAL)";
+                text.innerText = "🟡 MODO OFFLINE (CACHE LOCAL)";
             } else {
                 bar.classList.add('status-offline'); container.classList.add('status-offline');
                 text.innerText = "🔴 DESCONECTADO (SEM DADOS)";
@@ -627,11 +643,12 @@
         }
 
         // ==========================================
-        // DADOS E INTEGRAÇÃO GOOGLE SHEETS
+        // DADOS E INTEGRAÇÃO GOOGLE SHEETS (PARALELO E COM TIMEOUT)
         // ==========================================
         function forceSync() {
             const btn = document.getElementById('btn-force-sync');
             btn.classList.add('spinning');
+            updateConnectionStatus('syncing');
             
             fetchGoogleSheets().then((success) => {
                 if(!success) alert("Falha na sincronização. Verifique sua conexão com a internet. A CLARA continuará rodando com a última versão salva em seu dispositivo.");
@@ -643,31 +660,55 @@
             const noCacheStr = `&nocache=${Date.now()}`;
             let hasAnySuccess = false;
 
-            // Fetch de Aulas (Blindado)
-            try {
-                const resAulas = await fetch(LINK_PLANILHA_AULAS + noCacheStr);
-                if (resAulas.ok) { const tsv = await resAulas.text(); if (tsv && !tsv.includes('<html')) { localStorage.setItem('tpf43m_aulas', tsv); processarAulas(tsv); hasAnySuccess = true; } }
-            } catch(e) { console.warn("Aulas indisponíveis offline"); }
-
-            // Fetch de Eventos da Turma (Blindado)
-            try {
-                const resEventos = await fetch(LINK_PLANILHA_EVENTOS + noCacheStr);
-                if (resEventos.ok) { const tsv = await resEventos.text(); if (tsv && !tsv.includes('<html')) { localStorage.setItem('tpf43m_eventos', tsv); processarEventos(tsv); hasAnySuccess = true; } }
-            } catch(e) { console.warn("Eventos indisponíveis offline"); }
-
-            // Fetch de Datas de Interesse (Blindado)
-            try {
-                const resDatas = await fetch(LINK_PLANILHA_DATAS + noCacheStr);
-                if (resDatas.ok) { const tsv = await resDatas.text(); if (tsv && !tsv.includes('<html')) { localStorage.setItem('tpf43m_datas', tsv); processarDatas(tsv); hasAnySuccess = true; } }
-            } catch(e) { console.warn("Agenda indisponível offline"); }
-
-            // Fetch da Enciclopédia (Blindado)
-            if (LINK_PLANILHA_DICIO.startsWith("http")) {
+            // Função auxiliadora: Dispara o fetch, mas corta a conexão se demorar mais de 8 segundos (Evita o travamento eterno)
+            const fetchWithTimeout = async (url, ms = 8000) => {
+                const controller = new AbortController();
+                const id = setTimeout(() => controller.abort(), ms);
                 try {
-                    const resDicio = await fetch(LINK_PLANILHA_DICIO + noCacheStr);
-                    if (resDicio.ok) { const tsv = await resDicio.text(); if (tsv && !tsv.includes('<html')) { localStorage.setItem('tpf43m_dicio', tsv); processarDicio(tsv); hasAnySuccess = true; } }
-                } catch(e) { console.warn("Enciclopédia indisponível offline"); }
+                    const response = await fetch(url, { signal: controller.signal });
+                    clearTimeout(id);
+                    return response;
+                } catch (err) {
+                    clearTimeout(id);
+                    throw err;
+                }
+            };
+
+            // Criamos uma lista de tarefas para baixar tudo ao mesmo tempo (Paralelismo)
+            const fetchTasks = [];
+
+            // Tarefa 1: Aulas
+            fetchTasks.push(fetchWithTimeout(LINK_PLANILHA_AULAS + noCacheStr)
+                .then(async res => {
+                    if (res.ok) { const tsv = await res.text(); if (tsv && !tsv.includes('<html')) { localStorage.setItem('tpf43m_aulas', tsv); processarAulas(tsv); hasAnySuccess = true; } }
+                }).catch(e => console.warn("Aulas indisponíveis offline"))
+            );
+
+            // Tarefa 2: Eventos
+            fetchTasks.push(fetchWithTimeout(LINK_PLANILHA_EVENTOS + noCacheStr)
+                .then(async res => {
+                    if (res.ok) { const tsv = await res.text(); if (tsv && !tsv.includes('<html')) { localStorage.setItem('tpf43m_eventos', tsv); processarEventos(tsv); hasAnySuccess = true; } }
+                }).catch(e => console.warn("Eventos indisponíveis offline"))
+            );
+
+            // Tarefa 3: Datas (Agenda)
+            fetchTasks.push(fetchWithTimeout(LINK_PLANILHA_DATAS + noCacheStr)
+                .then(async res => {
+                    if (res.ok) { const tsv = await res.text(); if (tsv && !tsv.includes('<html')) { localStorage.setItem('tpf43m_datas', tsv); processarDatas(tsv); hasAnySuccess = true; } }
+                }).catch(e => console.warn("Agenda indisponível offline"))
+            );
+
+            // Tarefa 4: Enciclopédia
+            if (LINK_PLANILHA_DICIO.startsWith("http")) {
+                fetchTasks.push(fetchWithTimeout(LINK_PLANILHA_DICIO + noCacheStr)
+                    .then(async res => {
+                        if (res.ok) { const tsv = await res.text(); if (tsv && !tsv.includes('<html')) { localStorage.setItem('tpf43m_dicio', tsv); processarDicio(tsv); hasAnySuccess = true; } }
+                    }).catch(e => console.warn("Enciclopédia indisponível offline"))
+                );
             }
+
+            // Manda a CLARA executar todas as tarefas simultaneamente (Fim da fila de espera)
+            await Promise.all(fetchTasks);
 
             if (hasAnySuccess) {
                 updateConnectionStatus('online');
