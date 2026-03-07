@@ -35,13 +35,17 @@
             --accent-warning: #ff9800; 
             --border-color: #333;
 
-            /* Cores das Categorias */
-            --cat-editais: #4caf50;       /* Verde */
-            --cat-convocatorias: #2196f3; /* Azul */
-            --cat-exposicoes: #d500f9;    /* Roxo Claro */
-            --cat-cursos: #ffb300;        /* Amarelo */
-            --cat-feiras: #ff9800;        /* Laranja */
-            --cat-concursos: #f44336;     /* Vermelho */
+            * Cores das Categorias Individuais V4.3.0 */
+            --cat-edital: #4caf50;       /* Verde */
+            --cat-convocatoria: #2196f3; /* Azul Celeste */
+            --cat-exposicao: #9c27b0;    /* Roxo */
+            --cat-mostra: #673ab7;       /* Roxo Escuro */
+            --cat-curso: #ffc107;        /* Amarelo Âmbar */
+            --cat-palestra: #009688;     /* Verde-azulado (Teal) */
+            --cat-workshop: #3f51b5;     /* Azul Índigo */
+            --cat-feira: #ff9800;        /* Laranja */
+            --cat-festival: #e91e63;     /* Rosa Choque */
+            --cat-concurso: #f44336;     /* Vermelho */
         }
 
         body { 
@@ -223,7 +227,7 @@
         .modal-header { border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 15px; }
 
         /* ==========================================
-           4. EVENTOS E AGENDA V4.2.1 (Filtros + Cores)
+           4. EVENTOS E AGENDA V4.2.3 (Filtros + Cores)
            ========================================== */
         /* Filtros Inteligentes (Chips) - Modificado para ter título normal */
         .filter-container { background-color: var(--bg-panel); padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border-color); }
@@ -234,14 +238,18 @@
         .filter-chip { background-color: #2c2c2c; border: 1px solid #444; color: #ccc; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: 0.2s; font-weight: bold; user-select: none;}
         .filter-chip:hover { background-color: #3a3a3a; }
         
-        /* Correção das Classes Active (Antes estavam erradas) */
+        /* Correção das Classes Active para Categorias Individuais */
         .chip-todas.active { background-color: #e0e0e0; color: #121212; border-color: #e0e0e0; }
-        .cat-editais.active { background-color: var(--cat-editais); color: #121212; border-color: var(--cat-editais); }
-        .cat-convocatorias.active { background-color: var(--cat-convocatorias); color: #121212; border-color: var(--cat-convocatorias); }
-        .cat-exposicoes.active { background-color: var(--cat-exposicoes); color: #fff; border-color: var(--cat-exposicoes); }
-        .cat-cursos.active { background-color: var(--cat-cursos); color: #121212; border-color: var(--cat-cursos); }
-        .cat-feiras.active { background-color: var(--cat-feiras); color: #121212; border-color: var(--cat-feiras); }
-        .cat-concursos.active { background-color: var(--cat-concursos); color: #fff; border-color: var(--cat-concursos); }
+        .cat-edital.active { background-color: var(--cat-edital); color: #121212; border-color: var(--cat-edital); }
+        .cat-convocatoria.active { background-color: var(--cat-convocatoria); color: #121212; border-color: var(--cat-convocatoria); }
+        .cat-exposicao.active { background-color: var(--cat-exposicao); color: #fff; border-color: var(--cat-exposicao); }
+        .cat-mostra.active { background-color: var(--cat-mostra); color: #fff; border-color: var(--cat-mostra); }
+        .cat-curso.active { background-color: var(--cat-curso); color: #121212; border-color: var(--cat-curso); }
+        .cat-palestra.active { background-color: var(--cat-palestra); color: #fff; border-color: var(--cat-palestra); }
+        .cat-workshop.active { background-color: var(--cat-workshop); color: #fff; border-color: var(--cat-workshop); }
+        .cat-feira.active { background-color: var(--cat-feira); color: #121212; border-color: var(--cat-feira); }
+        .cat-festival.active { background-color: var(--cat-festival); color: #fff; border-color: var(--cat-festival); }
+        .cat-concurso.active { background-color: var(--cat-concurso); color: #fff; border-color: var(--cat-concurso); }
         .cat-default.active { background-color: var(--accent-datas); color: #121212; border-color: var(--accent-datas); }
         .chip-uf.active { background-color: #607d8b; color: #fff; border-color: #607d8b; }
 
@@ -256,23 +264,31 @@
         /* Estilos específicos para Datas de Interesse (Agenda) */
         .evento-card.datas-int { border-left-color: var(--accent-datas); opacity: 1 !important; filter: none !important; } 
         
-        /* Dynamic Borders for Cards */
-        .evento-card.datas-int.cat-editais { border-left-color: var(--cat-editais); }
-        .evento-card.datas-int.cat-convocatorias { border-left-color: var(--cat-convocatorias); }
-        .evento-card.datas-int.cat-exposicoes { border-left-color: var(--cat-exposicoes); }
-        .evento-card.datas-int.cat-cursos { border-left-color: var(--cat-cursos); }
-        .evento-card.datas-int.cat-feiras { border-left-color: var(--cat-feiras); }
-        .evento-card.datas-int.cat-concursos { border-left-color: var(--cat-concursos); }
+       /* Dynamic Borders for Cards */
+        .evento-card.datas-int.cat-edital { border-left-color: var(--cat-edital); }
+        .evento-card.datas-int.cat-convocatoria { border-left-color: var(--cat-convocatoria); }
+        .evento-card.datas-int.cat-exposicao { border-left-color: var(--cat-exposicao); }
+        .evento-card.datas-int.cat-mostra { border-left-color: var(--cat-mostra); }
+        .evento-card.datas-int.cat-curso { border-left-color: var(--cat-curso); }
+        .evento-card.datas-int.cat-palestra { border-left-color: var(--cat-palestra); }
+        .evento-card.datas-int.cat-workshop { border-left-color: var(--cat-workshop); }
+        .evento-card.datas-int.cat-feira { border-left-color: var(--cat-feira); }
+        .evento-card.datas-int.cat-festival { border-left-color: var(--cat-festival); }
+        .evento-card.datas-int.cat-concurso { border-left-color: var(--cat-concurso); }
 
         .ev-tipo { font-size: 0.75rem; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; color: var(--accent-datas); margin-bottom: 5px; display: inline-block; background: rgba(0, 188, 212, 0.1); padding: 3px 8px; border-radius: 4px;}
         
         /* Dynamic Tags */
-        .ev-tipo.cat-editais { color: var(--cat-editais); background: rgba(76, 175, 80, 0.1); }
-        .ev-tipo.cat-convocatorias { color: var(--cat-convocatorias); background: rgba(33, 150, 243, 0.1); }
-        .ev-tipo.cat-exposicoes { color: #e040fb; background: rgba(156, 39, 176, 0.1); }
-        .ev-tipo.cat-cursos { color: var(--cat-cursos); background: rgba(255, 179, 0, 0.1); }
-        .ev-tipo.cat-feiras { color: var(--cat-feiras); background: rgba(255, 152, 0, 0.1); }
-        .ev-tipo.cat-concursos { color: #ff5252; background: rgba(244, 67, 54, 0.1); }
+        .ev-tipo.cat-edital { color: var(--cat-edital); background: rgba(76, 175, 80, 0.1); }
+        .ev-tipo.cat-convocatoria { color: var(--cat-convocatoria); background: rgba(33, 150, 243, 0.1); }
+        .ev-tipo.cat-exposicao { color: var(--cat-exposicao); background: rgba(156, 39, 176, 0.1); }
+        .ev-tipo.cat-mostra { color: var(--cat-mostra); background: rgba(103, 58, 183, 0.1); }
+        .ev-tipo.cat-curso { color: var(--cat-curso); background: rgba(255, 193, 7, 0.1); }
+        .ev-tipo.cat-palestra { color: var(--cat-palestra); background: rgba(0, 150, 136, 0.1); }
+        .ev-tipo.cat-workshop { color: var(--cat-workshop); background: rgba(63, 81, 181, 0.1); }
+        .ev-tipo.cat-feira { color: var(--cat-feira); background: rgba(255, 152, 0, 0.1); }
+        .ev-tipo.cat-festival { color: var(--cat-festival); background: rgba(233, 30, 99, 0.1); }
+        .ev-tipo.cat-concurso { color: var(--cat-concurso); background: rgba(244, 67, 54, 0.1); }
         .evento-card:not(.datas-int) .ev-tipo { color: var(--accent-eventos); background: rgba(156, 39, 176, 0.1);}
         
         .ev-titulo { font-size: 1.3rem; font-weight: bold; color: #fff; margin: 8px 0 5px 0; line-height: 1.2; }
@@ -367,7 +383,7 @@
                         <button class="menu-btn btn-turma" onclick="requireAuth('view-turma-menu')"><span class="menu-icon">🔒</span> Área da Turma SCI-TPF43M</button>
 
             
-            <div class="clara-footer">CLARA v4.2.1 | Harry Bour</div>
+            <div class="clara-footer">CLARA v4.2.3 | Harry Bour</div>
         </div>
     </div>
 
@@ -550,7 +566,7 @@
         let currentLetter = 'A';
         let targetViewAfterAuth = '';
 
-        // Controles Filtros Agenda V4.2.1
+        // Controles Filtros Agenda V4.2.3
         let filtrosCatAtivos = new Set();
         let filtrosUFAtivos = new Set();
 
@@ -562,7 +578,7 @@
         };
 
         // ==========================================
-        // INICIALIZAÇÃO V4.2.1 (ONLINE ESTÁVEL)
+        // INICIALIZAÇÃO V4.2.3 (ONLINE ESTÁVEL)
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
             const currentVersion = "4.2.1";
@@ -809,22 +825,28 @@
         }
 
         // ==========================================
-        // MÓDULO: AGENDA V4.2.1 (Filtros e Cores)
+        // MÓDULO: AGENDA V4.2.3 (Filtros e Cores)
         // ==========================================
         
         // Identificador Dinâmico de Classes CSS
+        // Identificador Dinâmico de Classes CSS (Desmembrado para 10 Categorias)
         function getCategoriaClasse(categoriaReal) {
             if (!categoriaReal) return 'cat-default';
             const str = categoriaReal.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-            if (str.includes('edital') || str.includes('editais')) return 'cat-editais';
-            if (str.includes('convocatoria')) return 'cat-convocatorias';
-            if (str.includes('exposi') || str.includes('mostra')) return 'cat-exposicoes';
-            if (str.includes('curso') || str.includes('palestra') || str.includes('workshop')) return 'cat-cursos';
-            if (str.includes('feira') || str.includes('festival')) return 'cat-feiras';
-            if (str.includes('concurso') || str.includes('premio')) return 'cat-concursos';
+            
+            if (str.includes('edital') || str.includes('editais')) return 'cat-edital';
+            if (str.includes('convocatoria')) return 'cat-convocatoria';
+            if (str.includes('exposi')) return 'cat-exposicao';
+            if (str.includes('mostra')) return 'cat-mostra';
+            if (str.includes('curso')) return 'cat-curso';
+            if (str.includes('palestra')) return 'cat-palestra';
+            if (str.includes('workshop')) return 'cat-workshop';
+            if (str.includes('feira')) return 'cat-feira';
+            if (str.includes('festival')) return 'cat-festival';
+            if (str.includes('concurso') || str.includes('premio')) return 'cat-concurso';
+            
             return 'cat-default';
         }
-
         function processarDatas(tsv) { 
             const linhas = tratarTSV(tsv).slice(1); baseDatas = []; 
             if(linhas.length === 0) return;
