@@ -359,11 +359,13 @@
                 <div class="menu-turma-badge">Central de Luz e Apoio ao Repertório de Artistas do Audiovisual</div>
             </div>
             
-            <button class="menu-btn btn-turma" onclick="requireAuth('view-turma-menu')"><span class="menu-icon">🔒</span> Área da Turma SCI-TPF43M</button>
             <button class="menu-btn btn-datas" onclick="switchView('view-datas')"><span class="menu-icon">📅</span> Radar Cultural</button>
             <button class="menu-btn btn-dicio" onclick="switchView('view-dicio')"><span class="menu-icon">📖</span> Enciclopédia</button>
             <button class="menu-btn btn-sun" onclick="switchView('view-suncalc'); initSunCalc();"><span class="menu-icon">☀️</span>Luz Natural</button>
             <button class="menu-btn btn-calc" onclick="switchView('view-calc')"><span class="menu-icon">🧮</span>Mapa de Luz</button>
+
+                        <button class="menu-btn btn-turma" onclick="requireAuth('view-turma-menu')"><span class="menu-icon">🔒</span> Área da Turma SCI-TPF43M</button>
+
             
             <div class="clara-footer">CLARA v4.2.1 | Harry Bour</div>
         </div>
@@ -537,7 +539,7 @@
         const LINK_PLANILHA_AULAS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqOEEEZGFugY9MN7_0OsVjxvl02CxltDPfTx3LbUtte0mY7nLHWJxmu-ISbymcrS7cbyK__ixm43fI/pub?gid=0&single=true&output=tsv";
         const LINK_PLANILHA_EVENTOS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqOEEEZGFugY9MN7_0OsVjxvl02CxltDPfTx3LbUtte0mY7nLHWJxmu-ISbymcrS7cbyK__ixm43fI/pub?gid=1213067383&single=true&output=tsv";
         const LINK_PLANILHA_DATAS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqOEEEZGFugY9MN7_0OsVjxvl02CxltDPfTx3LbUtte0mY7nLHWJxmu-ISbymcrS7cbyK__ixm43fI/pub?gid=2069138341&single=true&output=tsv";
-        const LINK_PLANILHA_DICIO = "COLE_AQUI_O_LINK_TSV_DA_ABA_ENCICLOPEDIA"; 
+        const LINK_PLANILHA_DICIO = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqOEEEZGFugY9MN7_0OsVjxvl02CxltDPfTx3LbUtte0mY7nLHWJxmu-ISbymcrS7cbyK__ixm43fI/pub?gid=1758081988&single=true&output=tsv"; 
         
         let aulasArray = []; 
         let baseEventos = []; 
