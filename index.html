@@ -40,7 +40,7 @@
             --cat-convocatoria: #2196f3; /* Azul Celeste */
             --cat-exposicao: #9c27b0;    /* Roxo */
             --cat-mostra: #673ab7;       /* Roxo Escuro */
-            --cat-curso: #ffc107;        /* Amarelo Âmbar */
+            --cat-cursos: #ffc107;        /* Amarelo Âmbar */
             --cat-palestra: #009688;     /* Verde-azulado (Teal) */
             --cat-workshop: #3f51b5;     /* Azul Índigo */
             --cat-feira: #ff9800;        /* Laranja */
@@ -244,7 +244,7 @@
         .cat-convocatoria.active { background-color: var(--cat-convocatoria); color: #121212; border-color: var(--cat-convocatoria); }
         .cat-exposicao.active { background-color: var(--cat-exposicao); color: #fff; border-color: var(--cat-exposicao); }
         .cat-mostra.active { background-color: var(--cat-mostra); color: #fff; border-color: var(--cat-mostra); }
-        .cat-curso.active { background-color: var(--cat-curso); color: #121212; border-color: var(--cat-curso); }
+        .cat-cursos.active { background-color: var(--cat-cursos); color: #121212; border-color: var(--cat-cursos); }
         .cat-palestra.active { background-color: var(--cat-palestra); color: #fff; border-color: var(--cat-palestra); }
         .cat-workshop.active { background-color: var(--cat-workshop); color: #fff; border-color: var(--cat-workshop); }
         .cat-feira.active { background-color: var(--cat-feira); color: #121212; border-color: var(--cat-feira); }
@@ -269,7 +269,7 @@
         .evento-card.datas-int.cat-convocatoria { border-left-color: var(--cat-convocatoria); }
         .evento-card.datas-int.cat-exposicao { border-left-color: var(--cat-exposicao); }
         .evento-card.datas-int.cat-mostra { border-left-color: var(--cat-mostra); }
-        .evento-card.datas-int.cat-curso { border-left-color: var(--cat-curso); }
+        .evento-card.datas-int.cat-cursos { border-left-color: var(--cat-cursos); }
         .evento-card.datas-int.cat-palestra { border-left-color: var(--cat-palestra); }
         .evento-card.datas-int.cat-workshop { border-left-color: var(--cat-workshop); }
         .evento-card.datas-int.cat-feira { border-left-color: var(--cat-feira); }
@@ -283,7 +283,7 @@
         .ev-tipo.cat-convocatoria { color: var(--cat-convocatoria); background: rgba(33, 150, 243, 0.1); }
         .ev-tipo.cat-exposicao { color: var(--cat-exposicao); background: rgba(156, 39, 176, 0.1); }
         .ev-tipo.cat-mostra { color: var(--cat-mostra); background: rgba(103, 58, 183, 0.1); }
-        .ev-tipo.cat-curso { color: var(--cat-curso); background: rgba(255, 193, 7, 0.1); }
+        .ev-tipo.cat-cursos { color: var(--cat-cursos); background: rgba(255, 193, 7, 0.1); }
         .ev-tipo.cat-palestra { color: var(--cat-palestra); background: rgba(0, 150, 136, 0.1); }
         .ev-tipo.cat-workshop { color: var(--cat-workshop); background: rgba(63, 81, 181, 0.1); }
         .ev-tipo.cat-feira { color: var(--cat-feira); background: rgba(255, 152, 0, 0.1); }
@@ -838,7 +838,7 @@
             if (str.includes('convocatoria')) return 'cat-convocatoria';
             if (str.includes('exposi')) return 'cat-exposicao';
             if (str.includes('mostra')) return 'cat-mostra';
-            if (str.includes('curso')) return 'cat-curso';
+            if (str.includes('cursos')) return 'cat-cursos';
             if (str.includes('palestra')) return 'cat-palestra';
             if (str.includes('workshop')) return 'cat-workshop';
             if (str.includes('feira')) return 'cat-feira';
